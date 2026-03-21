@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Family Health Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1117;--sur:#1a1d27;--sur2:#222538;--bor:rgba(255,255,255,0.07);--bor2:rgba(255,255,255,0.13);--txt:#f0f0f5;--mut:#8888a0;--fnt:#444460;--grn:#3dd68c;--grn-bg:rgba(61,214,140,0.1);--amb:#f5a623;--amb-bg:rgba(245,166,35,0.1);--crl:#ff6b6b;--crl-bg:rgba(255,107,107,0.1);--blu:#5b9cf6;--blu-bg:rgba(91,156,246,0.1);--pur:#a78bfa;--pur-bg:rgba(167,139,250,0.1);--pnk:#f472b6;--pnk-bg:rgba(244,114,182,0.1);--r:12px;--rs:8px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+.app{max-width:480px;margin:0 auto;padding:0 0 90px;}
+
+/* Profile screen */
+.ps{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;}
+.ps h1{font-size:24px;font-weight:600;margin-bottom:6px;text-align:center;}
+.ps p{font-size:13px;color:var(--mut);margin-bottom:36px;text-align:center;}
+.pcards{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:320px;}
+.pcard{background:var(--sur);border:1.5px solid var(--bor2);border-radius:16px;padding:24px 16px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.pcard:hover{transform:translateY(-2px);}
+.sc:hover{border-color:var(--pur);background:var(--pur-bg);}
+.mc:hover{border-color:var(--pnk);background:var(--pnk-bg);}
+.pav{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;margin:0 auto 10px;}
+.sav{background:var(--pur-bg);border:2px solid var(--pur);color:var(--pur);}
+.mav{background:var(--pnk-bg);border:2px solid var(--pnk);color:var(--pnk);}
+.pname{font-size:16px;font-weight:600;}.pgoal{font-size:11px;color:var(--mut);margin-top:3px;}
+
+/* Top bar */
+.topbar{padding:16px 20px 0;display:flex;justify-content:space-between;align-items:center;}
+.topbar h1{font-size:20px;font-weight:600;letter-spacing:-0.3px;}
+.topbar p{font-size:11px;color:var(--mut);margin-top:1px;}
+.topright{display:flex;align-items:center;gap:10px;}
+.swbtn{font-size:11px;color:var(--mut);background:var(--sur);border:1px solid var(--bor2);border-radius:20px;padding:5px 10px;cursor:pointer;}
+.avs{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;}
+.syncbar{font-size:10px;text-align:center;padding:3px 20px;min-height:18px;color:var(--mut);}
+
+/* Date nav */
+.datenav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 0;}
+.dbtn{background:var(--sur);border:1px solid var(--bor);border-radius:var(--rs);width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mut);font-size:15px;}
+.dlbl{font-size:14px;font-weight:500;text-align:center;}.dsub{font-size:11px;color:var(--mut);text-align:center;margin-top:1px;}
+
+/* Macros */
+.macros{padding:14px 20px;}
+.calrow{display:flex;align-items:baseline;gap:6px;margin-bottom:10px;}
+.calbig{font-size:34px;font-weight:600;font-family:'DM Mono',monospace;letter-spacing:-1px;}
+.caltgt{font-size:12px;color:var(--mut);}
+.calrem{font-size:11px;margin-left:auto;padding:3px 8px;border-radius:20px;}
+.mbars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.mbc{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);padding:9px 11px;}
+.mblbl{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;}
+.mbrow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+.mbval{font-size:15px;font-weight:600;font-family:'DM Mono',monospace;}
+.mbtgt{font-size:10px;color:var(--mut);}.mbpct{font-size:10px;color:var(--mut);margin-bottom:4px;}
+.tbar{height:4px;background:var(--bor);border-radius:2px;overflow:hidden;}
+.tfil{height:100%;border-radius:2px;transition:width 0.5s;}
+
+/* Water */
+.watersec{margin:0 20px 12px;background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);padding:11px 13px;}
+.waterh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.watertit{font-size:13px;font-weight:500;}.watercnt{font-size:12px;font-family:'DM Mono',monospace;}
+.glasses{display:flex;gap:5px;flex-wrap:wrap;}
+.glass{width:26px;height:26px;border-radius:6px;border:1.5px solid var(--fnt);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.15s;background:transparent;}
+.glass.on{border-color:var(--blu);background:var(--blu-bg);}
+
+/* Tabs */
+.tabs{display:flex;gap:5px;padding:0 20px 14px;overflow-x:auto;}
+.tab{flex:0 0 auto;padding:7px 12px;background:var(--sur);border:1px solid var(--bor);border-radius:var(--rs);font-size:11px;font-weight:500;color:var(--mut);cursor:pointer;white-space:nowrap;transition:all 0.15s;}
+.tab.as{background:var(--pur-bg);border-color:var(--pur);color:var(--pur);}
+.tab.am{background:var(--pnk-bg);border-color:var(--pnk);color:var(--pnk);}
+.panel{display:none;padding:0 20px;}.panel.on{display:block;}
+
+/* Meal log */
+.mblock{margin-bottom:14px;}
+.mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.mtit{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--mut);}
+.mkcal{font-size:11px;color:var(--amb);font-family:'DM Mono',monospace;}
+.fcard{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);padding:9px 11px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;}
+.flft{flex:1;}.fn{font-size:13px;font-weight:500;}.fq{font-size:11px;color:var(--mut);margin-top:1px;}
+.frgt{text-align:right;}.fp{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;}
+.fd{font-size:10px;color:var(--mut);margin-top:2px;}
+.frm{background:none;border:none;color:var(--fnt);cursor:pointer;font-size:15px;padding:0 0 0 8px;line-height:1;}
+.frm:hover{color:var(--crl);}
+.addbtn{width:100%;padding:8px;background:none;border:1px dashed var(--bor2);border-radius:var(--r);color:var(--mut);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.addbtn:hover{border-color:var(--pur);color:var(--pur);background:var(--pur-bg);}
+
+/* Workout */
+.daysrow{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;}
+.daybtn{flex:0 0 auto;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--bor2);background:none;color:var(--mut);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all 0.12s;}
+.daybtn.as{background:var(--pur-bg);border-color:var(--pur);color:var(--pur);}
+.daybtn.am{background:var(--pnk-bg);border-color:var(--pnk);color:var(--pnk);}
+.wdtit{font-size:16px;font-weight:600;margin-bottom:2px;}
+.wdsub{font-size:12px;color:var(--mut);margin-bottom:12px;}
+.burncard{background:var(--crl-bg);border:1px solid rgba(255,107,107,0.2);border-radius:var(--r);padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.bcl{}.bctit{font-size:12px;color:var(--crl);font-weight:500;}.bcsub{font-size:11px;color:var(--mut);margin-top:2px;}
+.bcval{font-size:26px;font-weight:600;font-family:'DM Mono',monospace;color:var(--crl);}
+.wprog{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;}
+.wprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.wplbl{font-size:12px;color:var(--mut);}.wpval{font-size:20px;font-weight:600;font-family:'DM Mono',monospace;}
+.wpbar{height:6px;background:var(--bor);border-radius:3px;overflow:hidden;}
+.wpfil{height:100%;border-radius:3px;transition:width 0.4s;}
+.exblock{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+.exh{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;}
+.exchk{width:22px;height:22px;border-radius:6px;border:2px solid var(--bor2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;font-size:12px;}
+.exchk.ds{background:var(--pur);border-color:var(--pur);color:#fff;}
+.exchk.dm{background:var(--pnk);border-color:var(--pnk);color:#fff;}
+.exinfo{flex:1;}.exname{font-size:14px;font-weight:500;}.exmeta{font-size:11px;color:var(--mut);margin-top:2px;}
+.exkcal{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;color:var(--crl);}
+.exdet{padding:0 14px 12px 46px;border-top:1px solid var(--bor);}
+.exgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.excard{background:var(--sur2);border-radius:var(--rs);padding:8px 10px;}
+.eclbl{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
+.ecval{font-size:13px;font-weight:500;}
+.extip{font-size:11px;color:var(--mut);margin-top:8px;line-height:1.5;font-style:italic;}
+
+/* Ideas */
+.idfil{display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;}
+.ifbtn{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--bor2);background:none;color:var(--mut);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:all 0.12s;}
+.ifbtn.on{background:var(--amb-bg);border-color:var(--amb);color:var(--amb);}
+.icard{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);padding:11px 13px;margin-bottom:9px;}
+.itop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;}
+.iname{font-size:14px;font-weight:600;}
+.ibadges{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;}
+.ibadge{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;}
+.bgi{background:var(--grn-bg);color:var(--grn);}.bhp{background:var(--blu-bg);color:var(--blu);}
+.bt{background:var(--amb-bg);color:var(--amb);}.bwl{background:var(--pnk-bg);color:var(--pnk);}
+.idesc{font-size:11px;color:var(--mut);margin-bottom:7px;}
+.imacs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:7px;}
+.imac{font-size:11px;font-family:'DM Mono',monospace;}
+.ifoot{display:flex;justify-content:space-between;align-items:center;}
+.itag{font-size:10px;color:var(--mut);}
+.iaddbtn{padding:5px 12px;background:var(--sur2);border:1px solid var(--bor2);border-radius:var(--rs);font-size:11px;font-weight:500;color:var(--txt);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.iaddbtn:hover{background:var(--pur-bg);border-color:var(--pur);color:var(--pur);}
+
+/* Summary */
+.scard{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);padding:13px 15px;margin-bottom:11px;}
+.stit{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--mut);margin-bottom:11px;}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bor);font-size:13px;}
+.srow:last-child{border-bottom:none;}
+.slbl{color:var(--mut);}.sval{font-family:'DM Mono',monospace;font-weight:500;}
+.sg{color:var(--grn);}.sw{color:var(--amb);}.sl{color:var(--crl);}
+.tipcard{background:var(--amb-bg);border:1px solid rgba(245,166,35,0.2);border-radius:var(--r);padding:11px 13px;margin-bottom:9px;}
+.tiptit{font-size:11px;font-weight:600;color:var(--amb);margin-bottom:3px;}
+.tiptxt{font-size:12px;color:var(--txt);line-height:1.5;}
+
+/* Modal */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;padding:20px;align-items:flex-end;justify-content:center;}
+.moverlay.on{display:flex;}
+.modal{background:var(--sur);border:1px solid var(--bor2);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:82vh;display:flex;flex-direction:column;padding:18px;}
+.mtit{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+.mclose{background:var(--sur2);border:none;color:var(--mut);width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
+.sinp{width:100%;padding:10px 13px;background:var(--sur2);border:1px solid var(--bor2);border-radius:var(--r);color:var(--txt);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:9px;}
+.sinp:focus{border-color:var(--pur);}.sinp::placeholder{color:var(--mut);}
+.modebtns{display:flex;gap:6px;margin-bottom:8px;}
+.mbtn{flex:1;padding:7px;border-radius:var(--rs);font-size:12px;font-weight:500;cursor:pointer;background:none;border:1px solid var(--bor2);color:var(--mut);font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.mbtn.on{background:var(--pur-bg);border-color:var(--pur);color:var(--pur);}
+.qrow{display:flex;gap:8px;margin-bottom:10px;align-items:center;}
+.qlbl{font-size:12px;color:var(--mut);white-space:nowrap;}
+.qinp{width:75px;padding:7px 9px;background:var(--sur2);border:1px solid var(--bor2);border-radius:var(--rs);color:var(--txt);font-size:14px;font-family:'DM Mono',monospace;outline:none;text-align:center;}
+.qinp:focus{border-color:var(--pur);}.qunit{font-size:12px;color:var(--mut);}
+.shint{font-size:11px;color:var(--mut);margin-bottom:8px;display:none;}
+.prevbox{background:var(--sur2);border-radius:var(--r);padding:11px;margin-bottom:10px;display:none;}
+.prevbox.on{display:block;}.prevname{font-size:13px;font-weight:600;margin-bottom:7px;}
+.prevgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.prevstat{text-align:center;}.prevval{font-size:15px;font-weight:600;font-family:'DM Mono',monospace;}
+.prevlbl{font-size:10px;color:var(--mut);margin-top:1px;}
+.rlist{overflow-y:auto;flex:1;margin-bottom:10px;}
+.ritem{padding:9px 11px;border-radius:var(--rs);cursor:pointer;display:flex;justify-content:space-between;align-items:center;border:1px solid transparent;margin-bottom:3px;transition:all 0.12s;}
+.ritem:hover,.ritem.on{background:var(--sur2);border-color:var(--bor2);}
+.ritem.on{border-color:var(--pur);background:var(--pur-bg);}
+.rname{font-size:13px;font-weight:500;}.rcat{font-size:11px;color:var(--mut);margin-top:1px;}
+.rmacs{text-align:right;font-size:11px;color:var(--mut);font-family:'DM Mono',monospace;}
+.rmacs strong{color:var(--grn);font-size:12px;}
+.smsg{text-align:center;padding:18px;color:var(--mut);font-size:13px;}
+.confbtn{width:100%;padding:11px;background:var(--pur);border:none;border-radius:var(--r);color:white;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.confbtn:hover{opacity:0.85;}.confbtn:disabled{opacity:0.4;cursor:not-allowed;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--fnt);border-radius:2px;}
+/* AI Meal + Custom Workout modals */
+.ai-meal-btn{width:100%;padding:9px;background:none;border:1px solid;border-radius:var(--r);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.15s;}
+.ai-textarea{width:100%;padding:10px 13px;background:var(--sur2);border:1px solid var(--bor2);border-radius:var(--r);color:var(--txt);font-size:14px;font-family:inherit;outline:none;resize:none;height:90px;line-height:1.5;}
+.ai-textarea:focus{border-color:var(--pur);}
+.ai-textarea::placeholder{color:var(--mut);}
+.ai-result{background:var(--sur2);border-radius:var(--r);padding:12px;margin:10px 0;display:none;}
+.ai-result.show{display:block;}
+.ai-result-name{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--txt);}
+.ai-pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
+.ai-pstat{text-align:center;background:var(--sur);border-radius:var(--rs);padding:8px 4px;}
+.ai-pval{font-size:15px;font-weight:600;font-family:'DM Mono',monospace;}
+.ai-plbl{font-size:10px;color:var(--mut);margin-top:2px;}
+.ai-thinking{text-align:center;padding:16px;color:var(--mut);font-size:13px;display:none;}
+.ai-thinking.show{display:flex;align-items:center;justify-content:center;gap:8px;}
+.ai-spin{width:16px;height:16px;border:2px solid var(--bor2);border-top-color:var(--pur);border-radius:50%;animation:spin 0.7s linear infinite;}
+/* Custom workout modal */
+.cwmod{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:150;align-items:flex-end;justify-content:center;padding:20px;}
+.cwmod.on{display:flex;}
+.cwbox{background:var(--sur);border:1px solid var(--bor2);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:18px;max-height:85vh;overflow-y:auto;}
+.cwtit{font-size:15px;font-weight:600;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.cwclose{background:var(--sur2);border:none;color:var(--mut);width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
+.cwinp{width:100%;padding:10px 13px;background:var(--sur2);border:1px solid var(--bor2);border-radius:var(--r);color:var(--txt);font-size:14px;font-family:inherit;outline:none;margin-bottom:10px;}
+.cwinp:focus{border-color:var(--pur);}
+.cwinp::placeholder{color:var(--mut);}
+.cwrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.cwlbl{font-size:11px;color:var(--mut);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.cwsave{width:100%;padding:12px;background:var(--pur);border:none;border-radius:var(--r);color:white;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;}
+.cw-log-section{margin-top:14px;}
+.cw-log-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--mut);margin-bottom:10px;}
+.cw-log-item{background:var(--sur2);border-radius:var(--rs);padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.cw-log-name{font-size:13px;font-weight:500;}
+.cw-log-meta{font-size:11px;color:var(--mut);margin-top:2px;}
+.cw-log-cal{font-size:12px;font-weight:600;font-family:'DM Mono',monospace;color:var(--crl);}
+.cw-log-rm{background:none;border:none;color:var(--fnt);cursor:pointer;font-size:14px;padding:0 0 0 8px;}
+.cw-log-rm:hover{color:var(--crl);}
+.add-custom-wk-btn{width:100%;padding:9px;background:none;border:1px dashed var(--bor2);border-radius:var(--r);color:var(--mut);font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-top:8px;}
+.add-custom-wk-btn:hover{border-color:var(--pur);color:var(--pur);background:var(--pur-bg);}
+
+/* Exercise guide full-screen panel */
+.exguide{position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto;transform:translateX(100%);transition:transform 0.28s ease;max-width:480px;left:50%;margin-left:-240px;}
+@media(max-width:480px){.exguide{left:0;margin-left:0;}}
+.exguide.open{transform:translateX(0);}
+.eg-hdr{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--bor);position:sticky;top:0;background:var(--bg);z-index:10;}
+.eg-back{background:var(--sur);border:1px solid var(--bor2);border-radius:var(--rs);padding:7px 13px;font-size:13px;color:var(--mut);cursor:pointer;font-family:inherit;flex-shrink:0;}
+.eg-info h3{font-size:15px;font-weight:600;}
+.eg-info p{font-size:11px;color:var(--mut);margin-top:2px;}
+.eg-body{padding:14px 14px 80px;}
+.eg-card{background:var(--sur);border:1px solid var(--bor);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+.eg-sec{padding:13px 14px;}
+.eg-stit{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--mut);margin-bottom:11px;}
+.eg-step{display:flex;gap:11px;margin-bottom:10px;align-items:flex-start;}
+.eg-snum{flex:0 0 26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.eg-scue{font-size:13px;color:var(--txt);line-height:1.5;padding-top:2px;}
+.eg-tip{background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.18);border-radius:var(--rs);padding:11px 13px;margin-bottom:12px;}
+.eg-tiptit{font-size:11px;font-weight:600;color:var(--amb);margin-bottom:3px;}
+.eg-tiptxt{font-size:13px;color:var(--txt);line-height:1.5;}
+.eg-mtags{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;}
+.eg-mtag{font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(61,214,140,0.1);color:var(--grn);border:1px solid rgba(61,214,140,0.18);}
+.eg-ythumb{position:relative;background:#000;cursor:pointer;border-radius:var(--rs);overflow:hidden;margin-bottom:10px;}
+.eg-ythumb img{width:100%;display:block;opacity:0.85;}
+.eg-playov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(0,0,0,0.3);}
+.eg-playc{width:52px;height:52px;background:rgba(220,0,0,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.eg-playt{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid white;margin-left:3px;}
+.eg-playlbl{font-size:12px;font-weight:600;color:white;background:rgba(0,0,0,0.5);padding:4px 12px;border-radius:20px;}
+.eg-ytinfo{padding:9px 12px;background:var(--sur2);}
+.eg-ytname{font-size:13px;font-weight:500;margin-bottom:2px;}
+.eg-ytch{font-size:11px;color:var(--mut);}
+.eg-openbtn{width:100%;padding:12px;background:rgba(220,0,0,0.1);border:1px solid rgba(220,0,0,0.28);border-radius:var(--rs);font-size:13px;font-weight:600;color:#ff5555;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;}
+.eg-ytnote{font-size:11px;color:var(--mut);text-align:center;margin-top:7px;}
+.eg-donebtn{width:100%;padding:14px;border:none;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;transition:all 0.2s;}
+.eg-guidebtn{display:inline-block;margin-top:10px;padding:7px 0;background:transparent;border:1px solid;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;width:100%;text-align:center;}
+
+</style>
+</head>
+<body>
+
+<div id="pscreen" class="ps">
+  <h1>Family Health Tracker</h1>
+  <p>Who's tracking today?</p>
+  <div class="pcards">
+    <div class="pcard sc" onclick="selectProfile('santhosh')">
+      <div class="pav sav">S</div>
+      <div class="pname">Santhosh</div>
+      <div class="pgoal">Muscle building · T2D</div>
+    </div>
+    <div class="pcard mc" onclick="selectProfile('manasa')">
+      <div class="pav mav">M</div>
+      <div class="pname">Manasa</div>
+      <div class="pgoal">Weight loss · Strength</div>
+    </div>
+  </div>
+</div>
+
+<div id="mainapp" style="display:none">
+<div class="app">
+  <div class="topbar">
+    <div><h1 id="apptit">Tracker</h1><p id="appsub"></p></div>
+    <div class="topright">
+      <div class="swbtn" onclick="switchProfile()">Switch ↔</div>
+      <div class="avs" id="topav"></div>
+    </div>
+  </div>
+  <div class="syncbar" id="syncbar"></div>
+  <div class="datenav">
+    <button class="dbtn" onclick="changeDate(-1)">‹</button>
+    <div><div class="dlbl" id="dlbl">Today</div><div class="dsub" id="dsub"></div></div>
+    <button class="dbtn" onclick="changeDate(1)">›</button>
+  </div>
+  <div class="macros">
+    <div class="calrow">
+      <span class="calbig" id="tcal">0</span>
+      <span class="caltgt" id="caltgt">/ 2900 kcal</span>
+      <span class="calrem" id="calrem">2900 left</span>
+    </div>
+    <div class="mbars">
+      <div class="mbc"><div class="mblbl">Protein</div><div class="mbrow"><span class="mbval" id="tp">0g</span><span class="mbtgt" id="ptgt">145g</span></div><div class="mbpct" id="ppct">0%</div><div class="tbar"><div class="tfil" id="barp" style="width:0%"></div></div></div>
+      <div class="mbc"><div class="mblbl">Carbs</div><div class="mbrow"><span class="mbval" id="tc" style="color:var(--amb)">0g</span><span class="mbtgt" id="ctgt">200g</span></div><div class="mbpct" id="cpct">0%</div><div class="tbar"><div class="tfil" id="barc" style="width:0%;background:var(--amb)"></div></div></div>
+      <div class="mbc"><div class="mblbl">Fats</div><div class="mbrow"><span class="mbval" id="tf" style="color:var(--crl)">0g</span><span class="mbtgt" id="ftgt">75g</span></div><div class="mbpct" id="fpct">0%</div><div class="tbar"><div class="tfil" id="barf" style="width:0%;background:var(--crl)"></div></div></div>
+    </div>
+  </div>
+  <div class="watersec">
+    <div class="waterh"><div class="watertit">💧 Water</div><div class="watercnt" id="wcnt">0 / 8</div></div>
+    <div class="glasses" id="glasses"></div>
+  </div>
+  <div class="tabs">
+    <div class="tab" onclick="switchTab('log')" id="tlog">Log meals</div>
+    <div class="tab" onclick="switchTab('workout')" id="tworkout">Workout</div>
+    <div class="tab" onclick="switchTab('ideas')" id="tideas">Meal ideas</div>
+    <div class="tab" onclick="switchTab('summary')" id="tsummary">Summary</div>
+  </div>
+  <div class="panel" id="plog"><div id="mealscont"></div></div>
+  <div class="panel" id="pworkout"><div id="wkcont"></div></div>
+  <div class="panel" id="pideas">
+    <div class="idfil">
+      <button class="ifbtn on" onclick="filterIdeas('all',this)">All</button>
+      <button class="ifbtn" onclick="filterIdeas('breakfast',this)">Breakfast</button>
+      <button class="ifbtn" onclick="filterIdeas('lunch',this)">Lunch</button>
+      <button class="ifbtn" onclick="filterIdeas('dinner',this)">Dinner</button>
+      <button class="ifbtn" onclick="filterIdeas('snack',this)">Snack</button>
+    </div>
+    <div id="ideaslist"></div>
+  </div>
+  <div class="panel" id="psummary"><div id="sumcont"></div></div>
+</div>
+</div>
+
+<!-- Food modal -->
+<div class="moverlay" id="modal">
+  <div class="modal">
+    <div class="mtit"><span id="modtit">Add food</span><button class="mclose" onclick="closeModal()">✕</button></div>
+    <input class="sinp" id="sinp" placeholder="Search food... (ragi idli, chicken, dal...)" oninput="onSearch(this.value)" autocomplete="off">
+    <div class="modebtns">
+      <button class="mbtn on" id="mg" onclick="setMode('g')">By grams</button>
+      <button class="mbtn" id="mq" onclick="setMode('q')">By quantity (pieces)</button>
+    </div>
+    <div class="qrow" id="grows"><span class="qlbl">Grams:</span><input class="qinp" id="qg" type="number" value="100" min="1" max="5000" oninput="updPrev()"><span class="qunit">g</span></div>
+    <div class="qrow" id="qrows" style="display:none"><span class="qlbl">Qty:</span><input class="qinp" id="qq" type="number" value="1" min="0.5" max="50" step="0.5" oninput="updPrev()"><span class="qunit" id="qunit">pieces</span></div>
+    <div class="shint" id="shint"></div>
+    <div class="prevbox" id="prevbox">
+      <div class="prevname" id="prevname"></div>
+      <div class="prevgrid">
+        <div class="prevstat"><div class="prevval" id="pvcal" style="color:var(--pur)">0</div><div class="prevlbl">kcal</div></div>
+        <div class="prevstat"><div class="prevval" id="pvp" style="color:var(--grn)">0g</div><div class="prevlbl">protein</div></div>
+        <div class="prevstat"><div class="prevval" id="pvc" style="color:var(--amb)">0g</div><div class="prevlbl">carbs</div></div>
+        <div class="prevstat"><div class="prevval" id="pvf" style="color:var(--crl)">0g</div><div class="prevlbl">fats</div></div>
+      </div>
+    </div>
+    <div class="rlist" id="rlist"><div class="smsg">Start typing to search foods...</div></div>
+    <button class="confbtn" id="confbtn" disabled onclick="confirmAdd()">Select a food to add</button>
+    <button class="ai-meal-btn" id="ai-meal-toggle" onclick="toggleAIMeal()" style="border-color:var(--pur);color:var(--pur);margin-top:8px;">✨ Describe what you ate instead</button>
+    <div id="ai-meal-box" style="display:none;margin-top:10px;">
+      <textarea class="ai-textarea" id="ai-meal-inp" placeholder="e.g. I had 4 ragi idlis with sambar and 2 boiled eggs for breakfast"></textarea>
+      <button class="confbtn" style="background:var(--pur);margin-top:8px;" onclick="calcAIMeal()">✨ Calculate macros</button>
+      <div class="ai-thinking" id="ai-thinking"><div class="ai-spin"></div><span>Calculating...</span></div>
+      <div class="ai-result" id="ai-result">
+        <div class="ai-result-name" id="ai-result-name"></div>
+        <div class="ai-pgrid">
+          <div class="ai-pstat"><div class="ai-pval" id="ai-rcal" style="color:var(--pur)">0</div><div class="ai-plbl">kcal</div></div>
+          <div class="ai-pstat"><div class="ai-pval" id="ai-rp" style="color:var(--grn)">0g</div><div class="ai-plbl">protein</div></div>
+          <div class="ai-pstat"><div class="ai-pval" id="ai-rc" style="color:var(--amb)">0g</div><div class="ai-plbl">carbs</div></div>
+          <div class="ai-pstat"><div class="ai-pval" id="ai-rf" style="color:var(--crl)">0g</div><div class="ai-plbl">fats</div></div>
+        </div>
+        <button class="confbtn" style="background:var(--grn);color:#000;" onclick="addAIMeal()">Add to log ✓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const PROFILES={
+  santhosh:{name:'Santhosh',init:'S',goal:'Muscle building · T2D',ac:'var(--pur)',abg:'var(--pur-bg)',tgt:{cal:2900,p:145,c:200,f:75}},
+  manasa:  {name:'Manasa',  init:'M',goal:'Weight loss · Strength',ac:'var(--pnk)',abg:'var(--pnk-bg)',tgt:{cal:1600,p:100,c:130,f:55}}
+};
+
+const MEALS=[
+  {id:'breakfast',lbl:'Breakfast',icon:'🌅'},{id:'morning-snack',lbl:'Morning Snack',icon:'🍎'},
+  {id:'lunch',lbl:'Lunch',icon:'☀️'},{id:'afternoon-snack',lbl:'Afternoon Snack',icon:'🥜'},
+  {id:'dinner',lbl:'Dinner',icon:'🌙'},{id:'evening-snack',lbl:'Evening Snack',icon:'🌜'},
+];
+
+const WK={
+  santhosh:{
+    Monday:{f:'Push — Chest, Shoulders, Triceps',ex:[
+      {n:'Push-ups',s:'4 × 15–20 reps',d:'8 min',c:60,t:'Keep core tight. Progress to diamond push-ups over time.'},
+      {n:'Pike push-ups (shoulders)',s:'3 × 12 reps',d:'5 min',c:40,t:'Hips high, lower head toward floor. Great shoulder builder.'},
+      {n:'Tricep dips on chair',s:'3 × 15 reps',d:'5 min',c:35,t:'Fingers forward, elbows point back. Go slow on the way down.'},
+      {n:'Wide push-ups (chest)',s:'3 × 12 reps',d:'5 min',c:40,t:'Hands wider than shoulders, lower chest to ground.'},
+      {n:'Plank shoulder taps',s:'3 × 20 taps',d:'4 min',c:30,t:'Hips level, slow and controlled. Core stability.'},
+    ]},
+    Tuesday:{f:'Pull — Back & Biceps',ex:[
+      {n:'Towel door rows',s:'4 × 12 reps',d:'8 min',c:55,t:'Loop towel around door handle, lean back, pull chest to door.'},
+      {n:'Superman holds',s:'3 × 15 reps',d:'5 min',c:25,t:'Lift chest and legs simultaneously, hold 2 sec at top.'},
+      {n:'Bicep curls (water bottles)',s:'3 × 15 reps',d:'5 min',c:30,t:'Use any household weight. Squeeze at the top.'},
+      {n:'Dead hang (doorway)',s:'3 × 30 sec',d:'5 min',c:20,t:'Excellent for grip strength and back decompression.'},
+    ]},
+    Wednesday:{f:'Legs & Core',ex:[
+      {n:'Bodyweight squats',s:'4 × 20 reps',d:'8 min',c:70,t:'Chest up, knees over toes. Biggest muscle group — burns most calories.'},
+      {n:'Lunges (alternating)',s:'3 × 12 each leg',d:'6 min',c:55,t:'Big step forward, back knee nearly touches ground.'},
+      {n:'Glute bridges',s:'3 × 20 reps',d:'5 min',c:30,t:'Drive hips up, squeeze glutes at top for 1 sec.'},
+      {n:'Plank hold',s:'3 × 45 sec',d:'5 min',c:25,t:'Elbows under shoulders, body straight. Build to 60 sec.'},
+      {n:'Calf raises',s:'3 × 25 reps',d:'4 min',c:20,t:'Use a step edge for full range. Slow and controlled.'},
+    ]},
+    Thursday:{f:'Active Recovery + Cardio',ex:[
+      {n:'Brisk walk',s:'30 min',d:'30 min',c:150,t:'Excellent for T2D blood sugar management. Walk after meals when possible.'},
+      {n:'Full body stretching',s:'15 min',d:'15 min',c:30,t:'Hold each stretch 20–30 sec. Focus on chest, hips, hamstrings.'},
+    ]},
+    Friday:{f:'Full Body Strength',ex:[
+      {n:'Burpees (modified)',s:'3 × 10 reps',d:'6 min',c:65,t:'Step feet back instead of jumping to start. Build up over time.'},
+      {n:'Push-up to T rotation',s:'3 × 10 reps',d:'6 min',c:50,t:'Push-up then rotate to side plank. Works core and chest together.'},
+      {n:'Jump squats',s:'3 × 15 reps',d:'6 min',c:60,t:'Start with slow squats, add jump when comfortable.'},
+      {n:'Mountain climbers',s:'3 × 30 sec',d:'5 min',c:45,t:'Fast feet, shoulders over wrists. Great cardio + core.'},
+      {n:'Wall sit',s:'3 × 45 sec',d:'5 min',c:30,t:'Back flat on wall, thighs parallel to floor. Quad burner!'},
+    ]},
+    Saturday:{f:'Core + Flexibility',ex:[
+      {n:'Dead bug exercise',s:'3 × 10 reps',d:'6 min',c:25,t:'Lower back pressed to floor. Opposite arm and leg extend slowly.'},
+      {n:'Bicycle crunches',s:'3 × 20 reps',d:'5 min',c:30,t:'Slow and controlled, full rotation to elbow-to-knee.'},
+      {n:'Leg raises',s:'3 × 15 reps',d:'5 min',c:25,t:'Lower back flat, legs straight. Lower slowly.'},
+      {n:'Yoga sun salutation (3 rounds)',s:'3 rounds',d:'15 min',c:50,t:'YouTube "Yoga with Adriene". Excellent for flexibility.'},
+    ]},
+    Sunday:{f:'Rest Day 🙌',ex:[
+      {n:'Rest & Recovery',s:'—',d:'—',c:0,t:'Muscle is built on rest days. Eat well, hydrate, sleep 7–9 hours.'},
+    ]},
+  },
+  manasa:{
+    Monday:{f:'Lower Body Strength',ex:[
+      {n:'Bodyweight squats',s:'3 × 15 reps',d:'7 min',c:50,t:'Focus on form. Toes out slightly, chest tall. Great for legs and glutes.'},
+      {n:'Glute bridges',s:'3 × 20 reps',d:'6 min',c:35,t:'Squeeze hard at top. Best home exercise for glutes.'},
+      {n:'Side-lying leg raises',s:'3 × 15 each',d:'6 min',c:25,t:'Slow and controlled. Great for outer glutes and hips.'},
+      {n:'Step-ups on stair',s:'3 × 12 each leg',d:'6 min',c:45,t:'Full foot on step, drive through heel.'},
+      {n:'Calf raises',s:'3 × 20 reps',d:'4 min',c:18,t:'Use wall for balance. Slow on the way down.'},
+    ]},
+    Tuesday:{f:'Upper Body + Core',ex:[
+      {n:'Knee push-ups',s:'3 × 12 reps',d:'5 min',c:30,t:'Build to full push-ups over time. Core engaged throughout.'},
+      {n:'Tricep dips on chair',s:'3 × 12 reps',d:'5 min',c:28,t:'Targets backs of arms. Go slow on way down.'},
+      {n:'Plank hold',s:'3 × 30 sec',d:'5 min',c:20,t:'Build to 60 sec over weeks. Breathe steadily.'},
+      {n:'Superman holds',s:'3 × 12 reps',d:'4 min',c:18,t:'Strengthens lower back. Hold 2 seconds at top.'},
+      {n:'Seated shoulder press (bottles)',s:'3 × 12 reps',d:'5 min',c:22,t:'Use water bottles. Tones shoulders nicely.'},
+    ]},
+    Wednesday:{f:'Cardio Burn',ex:[
+      {n:'Brisk walk / jog intervals',s:'25 min total',d:'25 min',c:160,t:'Walk 2 min, jog 1 min, repeat. Best for fat burn.'},
+      {n:'Jumping jacks',s:'3 × 30 sec',d:'5 min',c:40,t:'Low impact version: step side to side if needed.'},
+      {n:'High knees marching',s:'3 × 30 sec',d:'4 min',c:35,t:'Drive knees up to hip height. Arms pumping.'},
+    ]},
+    Thursday:{f:'Lower Body + Stretch',ex:[
+      {n:'Sumo squats',s:'3 × 15 reps',d:'6 min',c:45,t:'Wide stance, toes out 45°. Targets inner thighs and glutes.'},
+      {n:'Donkey kicks',s:'3 × 15 each',d:'6 min',c:30,t:'On all fours, kick heel toward ceiling. Squeeze glute at top.'},
+      {n:'Fire hydrants',s:'3 × 15 each',d:'5 min',c:25,t:'Lift knee to side. Great for outer hip and glute toning.'},
+      {n:'Seated forward fold',s:'3 × 30 sec',d:'5 min',c:10,t:'Sit on floor, reach for toes. Breathe into the stretch.'},
+    ]},
+    Friday:{f:'Full Body Circuit',ex:[
+      {n:'Squat to overhead press',s:'3 × 12 reps',d:'6 min',c:50,t:'Use water bottles. Squat down, stand and press arms up.'},
+      {n:'Reverse lunges',s:'3 × 10 each',d:'6 min',c:45,t:'Step back — more knee-friendly than forward lunges.'},
+      {n:'Mountain climbers (slow)',s:'3 × 15 reps',d:'5 min',c:35,t:'Slow = more core work. Speed up over weeks.'},
+      {n:'Lateral side steps',s:'3 × 12 each',d:'5 min',c:30,t:'Bend knees, step side to side. Targets hips and outer glutes.'},
+    ]},
+    Saturday:{f:'Yoga + Full Stretch',ex:[
+      {n:'Yoga flow (20 min)',s:'1 session',d:'20 min',c:70,t:'Try "Yoga with Adriene" on YouTube — Morning Yoga or Yoga for Weight Loss.'},
+      {n:'Deep breathing / pranayama',s:'10 min',d:'10 min',c:15,t:'Reduces cortisol which directly helps weight loss. Very underrated!'},
+    ]},
+    Sunday:{f:'Rest Day 🌸',ex:[
+      {n:'Rest & Recovery',s:'—',d:'—',c:0,t:'Rest is when your body changes. Eat clean, sleep 7–8 hours.'},
+    ]},
+  }
+};
+
+const FDB=[
+  {n:'Cooked brown rice',c:'Grains',cal:122,p:2.6,cb:26,f:0.9},{n:'Cooked white rice',c:'Grains',cal:130,p:2.4,cb:28,f:0.3},
+  {n:'Cooked basmati rice',c:'Grains',cal:121,p:2.5,cb:25,f:0.4},{n:'Chapati / roti (plain)',c:'Grains',cal:297,p:9,cb:55,f:3.7},
+  {n:'Multigrain roti',c:'Grains',cal:280,p:10,cb:50,f:4},{n:'Cooked oats / oatmeal',c:'Grains',cal:71,p:2.5,cb:12,f:1.5},
+  {n:'Whole wheat bread',c:'Grains',cal:247,p:13,cb:41,f:3.5},{n:'Idli (steamed, rice)',c:'Grains',cal:58,p:2,cb:12,f:0.3},
+  {n:'Dosa (plain rice)',c:'Grains',cal:168,p:3.9,cb:24,f:6},{n:'Poha / flattened rice (cooked)',c:'Grains',cal:110,p:2,cb:23,f:0.8},
+  {n:'Upma / rava (cooked)',c:'Grains',cal:115,p:3,cb:19,f:3},{n:'Paratha (plain whole wheat)',c:'Grains',cal:300,p:7,cb:46,f:10},
+  {n:'Cooked quinoa',c:'Grains',cal:120,p:4.4,cb:22,f:1.9},{n:'Cooked daliya / broken wheat',c:'Grains',cal:112,p:3.5,cb:23,f:0.7},
+  {n:'Cooked barley',c:'Grains',cal:123,p:2.3,cb:28,f:0.4},{n:'Sattu (roasted chana flour)',c:'Grains',cal:406,p:22,cb:65,f:6},
+  {n:'Ragi idli (steamed)',c:'Millets',cal:62,p:2.2,cb:13,f:0.5},{n:'Ragi dosa',c:'Millets',cal:155,p:4,cb:28,f:3.5},
+  {n:'Ragi mudde / ball',c:'Millets',cal:130,p:3,cb:28,f:0.7},{n:'Ragi porridge / kanji',c:'Millets',cal:75,p:2,cb:16,f:0.5},
+  {n:'Ragi roti / chapati',c:'Millets',cal:210,p:5,cb:44,f:1.5},{n:'Ragi upma',c:'Millets',cal:110,p:3,cb:22,f:2},
+  {n:'Bajra roti / bhakri',c:'Millets',cal:235,p:8,cb:46,f:4},{n:'Bajra khichdi (cooked)',c:'Millets',cal:130,p:5,cb:26,f:1.5},
+  {n:'Jowar roti / bhakri',c:'Millets',cal:225,p:7,cb:47,f:1.5},{n:'Jowar dosa',c:'Millets',cal:145,p:4,cb:28,f:2.5},
+  {n:'Foxtail millet upma',c:'Millets',cal:118,p:4,cb:23,f:2.2},{n:'Foxtail millet pongal',c:'Millets',cal:135,p:5,cb:26,f:2.5},
+  {n:'Little millet / samai rice (cooked)',c:'Millets',cal:110,p:3,cb:23,f:1.2},{n:'Barnyard millet khichdi',c:'Millets',cal:115,p:3.5,cb:24,f:1.5},
+  {n:'Kodo millet rice (cooked)',c:'Millets',cal:106,p:3,cb:22,f:0.8},{n:'Amaranth / rajgira roti',c:'Millets',cal:220,p:8,cb:42,f:4},
+  {n:'Buckwheat / kuttu dosa',c:'Millets',cal:150,p:5,cb:28,f:3},{n:'Buckwheat / kuttu paratha',c:'Millets',cal:260,p:8,cb:48,f:5},
+  {n:'Millet khichdi (mixed millets + dal)',c:'Millets',cal:125,p:5.5,cb:24,f:1.8},{n:'Millet idli (mixed)',c:'Millets',cal:60,p:2.3,cb:12,f:0.6},
+  {n:'Millet dosa',c:'Millets',cal:148,p:4.2,cb:27,f:3},{n:'Ragi flour (raw)',c:'Millets',cal:336,p:7.3,cb:72,f:1.5},
+  {n:'Bajra flour (raw)',c:'Millets',cal:361,p:11,cb:67,f:5},{n:'Jowar flour (raw)',c:'Millets',cal:349,p:10,cb:72,f:1.7},
+  {n:'Foxtail millet / kangni (raw)',c:'Millets',cal:351,p:12,cb:63,f:4},{n:'Little millet / samai (raw)',c:'Millets',cal:341,p:7.7,cb:67,f:4},
+  {n:'Barnyard millet (raw)',c:'Millets',cal:307,p:6.2,cb:65,f:2.2},{n:'Kodo millet (raw)',c:'Millets',cal:309,p:8.3,cb:66,f:1.4},
+  {n:'Amaranth / rajgira (raw)',c:'Millets',cal:371,p:14,cb:65,f:7},{n:'Buckwheat / kuttu (raw)',c:'Millets',cal:343,p:13,cb:72,f:3.4},
+  {n:'Cooked toor dal',c:'Dal & Legumes',cal:116,p:7,cb:20,f:0.4},{n:'Cooked moong dal',c:'Dal & Legumes',cal:105,p:7.5,cb:18,f:0.4},
+  {n:'Cooked chana dal',c:'Dal & Legumes',cal:160,p:9,cb:28,f:2},{n:'Cooked masoor dal',c:'Dal & Legumes',cal:116,p:9,cb:20,f:0.4},
+  {n:'Cooked rajma (kidney beans)',c:'Dal & Legumes',cal:127,p:8.7,cb:23,f:0.5},{n:'Cooked chickpeas / chana',c:'Dal & Legumes',cal:164,p:8.9,cb:27,f:2.6},
+  {n:'Cooked kala chana (black chickpea)',c:'Dal & Legumes',cal:164,p:8.9,cb:27,f:2.5},{n:'Cooked black-eyed peas (lobia)',c:'Dal & Legumes',cal:116,p:8,cb:21,f:0.6},
+  {n:'Cooked green moong (whole)',c:'Dal & Legumes',cal:105,p:7,cb:19,f:0.4},{n:'Cooked soybean',c:'Dal & Legumes',cal:173,p:17,cb:10,f:9},
+  {n:'Cooked dal makhani',c:'Dal & Legumes',cal:140,p:7,cb:18,f:5},{n:'Sambar (lentil soup)',c:'Dal & Legumes',cal:55,p:3,cb:8,f:1.5},
+  {n:'Moong dal chilla (cooked)',c:'Dal & Legumes',cal:110,p:7,cb:16,f:2},{n:'Besan / chickpea flour cheela',c:'Dal & Legumes',cal:120,p:7,cb:17,f:2.5},
+  {n:'Dhokla (steamed besan)',c:'Dal & Legumes',cal:145,p:6,cb:24,f:3},{n:'Sprouted moong',c:'Dal & Legumes',cal:30,p:3.2,cb:4,f:0.2},
+  {n:'Chicken breast (cooked)',c:'Chicken',cal:165,p:31,cb:0,f:3.6},{n:'Chicken thigh (cooked)',c:'Chicken',cal:209,p:26,cb:0,f:11},
+  {n:'Chicken curry (with gravy)',c:'Chicken',cal:150,p:16,cb:5,f:8},{n:'Tandoori chicken',c:'Chicken',cal:170,p:25,cb:4,f:6},
+  {n:'Chicken keema',c:'Chicken',cal:175,p:20,cb:4,f:9},{n:'Grilled chicken',c:'Chicken',cal:160,p:30,cb:0,f:4},
+  {n:'Chicken tikka',c:'Chicken',cal:180,p:26,cb:3,f:7},{n:'Chicken palak / saag chicken',c:'Chicken',cal:145,p:16,cb:5,f:7},
+  {n:'Chicken soup (clear)',c:'Chicken',cal:45,p:6,cb:2,f:1.5},
+  {n:'Whole egg (boiled)',c:'Eggs',cal:143,p:13,cb:1,f:10},{n:'Egg white only',c:'Eggs',cal:52,p:11,cb:0.7,f:0.2},
+  {n:'Scrambled eggs',c:'Eggs',cal:148,p:10,cb:1.5,f:11},{n:'Omelette (plain)',c:'Eggs',cal:154,p:11,cb:1,f:12},
+  {n:'Egg bhurji / masala eggs',c:'Eggs',cal:160,p:11,cb:3,f:12},{n:'Egg curry',c:'Eggs',cal:155,p:11,cb:5,f:10},
+  {n:'Basa fish (cooked/steamed)',c:'Fish',cal:90,p:18,cb:0,f:2},{n:'Basa fish (fried lightly)',c:'Fish',cal:160,p:17,cb:5,f:9},
+  {n:'Basa fish curry',c:'Fish',cal:110,p:16,cb:4,f:4},{n:'Tuna in brine (canned)',c:'Fish',cal:116,p:26,cb:0,f:1},
+  {n:'Paneer (full fat)',c:'Dairy & Paneer',cal:265,p:18,cb:3,f:20},{n:'Paneer (low fat)',c:'Dairy & Paneer',cal:180,p:18,cb:3,f:11},
+  {n:'Paneer bhurji',c:'Dairy & Paneer',cal:230,p:16,cb:5,f:17},{n:'Palak paneer',c:'Dairy & Paneer',cal:185,p:10,cb:7,f:14},
+  {n:'Paneer tikka (grilled)',c:'Dairy & Paneer',cal:220,p:16,cb:5,f:15},
+  {n:'Greek yogurt (full fat)',c:'Dairy & Paneer',cal:97,p:9,cb:4,f:5},{n:'Greek yogurt (low fat)',c:'Dairy & Paneer',cal:59,p:10,cb:3.6,f:0.4},
+  {n:'Curd / dahi (full fat)',c:'Dairy & Paneer',cal:98,p:3.5,cb:4.7,f:4.3},{n:'Curd / dahi (low fat)',c:'Dairy & Paneer',cal:62,p:3.3,cb:4.7,f:1.6},
+  {n:'Raita (cucumber curd)',c:'Dairy & Paneer',cal:50,p:2.5,cb:4,f:2},{n:'Buttermilk / chaas',c:'Dairy & Paneer',cal:40,p:3,cb:5,f:1},
+  {n:'Milk (full fat)',c:'Dairy & Paneer',cal:61,p:3.2,cb:4.8,f:3.3},{n:'Milk (skim / toned)',c:'Dairy & Paneer',cal:34,p:3.4,cb:5,f:0.1},
+  {n:'Whey protein isolate (ON Gold Standard)',c:'Dairy & Paneer',cal:120,p:24,cb:4,f:1.5},{n:'Whey protein powder (generic)',c:'Dairy & Paneer',cal:380,p:75,cb:8,f:5},
+  {n:'Mutton curry',c:'Mutton',cal:243,p:17,cb:4,f:18},{n:'Mutton (cooked lean)',c:'Mutton',cal:258,p:26,cb:0,f:17},{n:'Mutton keema',c:'Mutton',cal:210,p:19,cb:5,f:13},
+  {n:'Spinach / palak (cooked)',c:'Vegetables',cal:23,p:3,cb:3.4,f:0.4},{n:'Broccoli (cooked)',c:'Vegetables',cal:35,p:2.4,cb:7,f:0.4},
+  {n:'Tomato',c:'Vegetables',cal:18,p:0.9,cb:3.9,f:0.2},{n:'Onion',c:'Vegetables',cal:40,p:1.1,cb:9.3,f:0.1},
+  {n:'Cauliflower / gobi (cooked)',c:'Vegetables',cal:25,p:1.9,cb:5,f:0.3},{n:'Cucumber',c:'Vegetables',cal:15,p:0.7,cb:3.6,f:0.1},
+  {n:'Sweet potato (boiled)',c:'Vegetables',cal:86,p:1.6,cb:20,f:0.1},{n:'Potato (boiled)',c:'Vegetables',cal:87,p:2.5,cb:20,f:0.1},
+  {n:'Bitter gourd / karela',c:'Vegetables',cal:17,p:1,cb:3.7,f:0.2},{n:'Bottle gourd / lauki',c:'Vegetables',cal:15,p:0.6,cb:3.4,f:0.1},
+  {n:'Lady finger / okra / bhindi',c:'Vegetables',cal:33,p:2,cb:7,f:0.2},{n:'Capsicum / bell pepper',c:'Vegetables',cal:31,p:1,cb:6,f:0.3},
+  {n:'Fenugreek / methi leaves',c:'Vegetables',cal:49,p:4.4,cb:6,f:0.9},{n:'Drumstick / moringa',c:'Vegetables',cal:37,p:2.1,cb:8.5,f:0.2},
+  {n:'Banana',c:'Fruits',cal:89,p:1.1,cb:23,f:0.3},{n:'Apple',c:'Fruits',cal:52,p:0.3,cb:14,f:0.2},
+  {n:'Orange',c:'Fruits',cal:47,p:0.9,cb:12,f:0.1},{n:'Papaya',c:'Fruits',cal:43,p:0.5,cb:11,f:0.3},
+  {n:'Guava',c:'Fruits',cal:68,p:2.6,cb:14,f:1},{n:'Watermelon',c:'Fruits',cal:30,p:0.6,cb:7.6,f:0.2},
+  {n:'Pomegranate',c:'Fruits',cal:83,p:1.7,cb:19,f:1.2},
+  {n:'Almonds',c:'Nuts & Fats',cal:579,p:21,cb:22,f:50},{n:'Walnuts',c:'Nuts & Fats',cal:654,p:15,cb:14,f:65},
+  {n:'Peanuts (roasted)',c:'Nuts & Fats',cal:567,p:26,cb:16,f:49},{n:'Peanut butter',c:'Nuts & Fats',cal:588,p:25,cb:20,f:50},
+  {n:'Flaxseeds / alsi',c:'Nuts & Fats',cal:534,p:18,cb:29,f:42},{n:'Chia seeds',c:'Nuts & Fats',cal:486,p:17,cb:42,f:31},
+  {n:'Ghee',c:'Nuts & Fats',cal:900,p:0,cb:0,f:100},{n:'Olive oil',c:'Nuts & Fats',cal:884,p:0,cb:0,f:100},
+  {n:'Roasted chana',c:'Snacks',cal:364,p:17,cb:60,f:5},{n:'Makhana / fox nuts (roasted)',c:'Snacks',cal:347,p:9,cb:76,f:1},
+  {n:'Sprouts (mixed, raw)',c:'Snacks',cal:40,p:4,cb:5.5,f:0.4},{n:'Protein bar (avg low sugar)',c:'Snacks',cal:210,p:20,cb:22,f:6},
+];
+
+const SS={'ragi idli':{g:40,u:'idli'},'millet idli':{g:40,u:'idli'},'idli':{g:40,u:'idli'},
+  'ragi dosa':{g:120,u:'dosa'},'jowar dosa':{g:120,u:'dosa'},'millet dosa':{g:120,u:'dosa'},'dosa':{g:120,u:'dosa'},
+  'ragi roti':{g:45,u:'roti'},'bajra roti':{g:50,u:'roti'},'jowar roti':{g:50,u:'roti'},
+  'chapati':{g:45,u:'roti'},'roti':{g:45,u:'roti'},'paratha':{g:80,u:'paratha'},'bhakri':{g:50,u:'bhakri'},
+  'whole wheat bread':{g:30,u:'slice'},'bread':{g:30,u:'slice'},
+  'egg':{g:55,u:'egg'},'banana':{g:120,u:'banana'},'apple':{g:150,u:'apple'},'orange':{g:130,u:'orange'},'guava':{g:100,u:'guava'},
+  'almond':{g:1.2,u:'almond'},'walnut':{g:4,u:'walnut'},
+  'whey protein':{g:31,u:'scoop'},'casein protein':{g:31,u:'scoop'},
+  'basa fish':{g:150,u:'fillet'},'chicken breast':{g:150,u:'piece'},'mutton':{g:100,u:'serving'},
+  'ragi mudde':{g:100,u:'ball'},'dhokla':{g:50,u:'piece'},'cheela':{g:80,u:'cheela'},'chilla':{g:80,u:'chilla'},
+};
+
+const IDEAS=[
+  {n:'Scrambled eggs & whole wheat roti',m:'breakfast',d:'3 eggs + 2 whole wheat roti',cal:420,p:28,cb:36,f:18,b:['hp','lgi']},
+  {n:'Ragi idli (4) + sambar',m:'breakfast',d:'Finger millet idli + lentil sambar',cal:310,p:12,cb:54,f:4,b:['lgi','t2d']},
+  {n:'Moong dal chilla (2) + chutney',m:'breakfast',d:'Lentil crepes — high protein, very low GI',cal:280,p:16,cb:36,f:6,b:['hp','lgi','t2d']},
+  {n:'Oats porridge + banana + almonds',m:'breakfast',d:'1 cup oats in milk, 1 banana, 10 almonds',cal:390,p:13,cb:62,f:10,b:['lgi','t2d']},
+  {n:'Besan cheela (2) + curd',m:'breakfast',d:'Chickpea flour pancakes + 100g low-fat curd',cal:330,p:18,cb:38,f:10,b:['hp','lgi','t2d']},
+  {n:'Egg bhurji + bajra roti',m:'breakfast',d:'3 egg bhurji + 2 bajra roti',cal:440,p:28,cb:40,f:18,b:['hp','t2d']},
+  {n:'Jowar dosa + tomato chutney',m:'breakfast',d:'Sorghum crepe — gluten free, low GI',cal:270,p:8,cb:46,f:5,b:['lgi','t2d','wl']},
+  {n:'Greek yogurt + papaya + chia seeds',m:'breakfast',d:'200g low-fat Greek yogurt + papaya',cal:210,p:18,cb:24,f:4,b:['hp','t2d','wl']},
+  {n:'Banana whey protein smoothie',m:'breakfast',d:'1 banana + 1 scoop whey + 200ml milk',cal:430,p:32,cb:50,f:10,b:['hp']},
+  {n:'Foxtail millet upma',m:'breakfast',d:'Foxtail millet with mixed veg and curry leaves',cal:280,p:9,cb:48,f:6,b:['lgi','t2d','wl']},
+  {n:'Masala omelette + multigrain toast',m:'breakfast',d:'3 egg omelette with onion, tomato + 2 slices toast',cal:400,p:26,cb:30,f:18,b:['hp']},
+  {n:'Boiled eggs (2) + fruit',m:'snack',d:'2 hard boiled eggs + 1 apple or guava',cal:200,p:14,cb:18,f:10,b:['hp','t2d']},
+  {n:'Roasted chana + guava',m:'snack',d:'30g roasted chana + 1 medium guava',cal:185,p:8,cb:38,f:2,b:['lgi','t2d','wl']},
+  {n:'Mixed nuts (almonds + walnuts)',m:'snack',d:'15 almonds + 5 walnuts',cal:175,p:5,cb:5,f:16,b:['t2d']},
+  {n:'Sprouts chaat',m:'snack',d:'1 cup mixed sprouts, lemon, jeera, onion',cal:120,p:9,cb:18,f:1,b:['lgi','t2d','wl']},
+  {n:'Paneer cubes + cucumber',m:'snack',d:'50g paneer + cucumber slices + chaat masala',cal:155,p:9,cb:3,f:12,b:['hp','t2d']},
+  {n:'Greek yogurt bowl',m:'snack',d:'150g low-fat Greek yogurt + pinch of jeera',cal:100,p:15,cb:5,f:1,b:['hp','t2d','wl']},
+  {n:'Makhana roasted (30g)',m:'snack',d:'Fox nuts — very low calorie, very low GI',cal:110,p:4,cb:20,f:1,b:['lgi','t2d','wl']},
+  {n:'Whey protein shake',m:'snack',d:'1 scoop whey isolate in water or skim milk',cal:130,p:25,cb:4,f:2,b:['hp']},
+  {n:'Kala chana salad',m:'snack',d:'½ cup black chickpea, onion, tomato, lemon',cal:160,p:9,cb:26,f:2,b:['hp','lgi','t2d','wl']},
+  {n:'Chicken curry + brown rice',m:'lunch',d:'150g chicken curry + 1 cup brown rice',cal:540,p:42,cb:58,f:12,b:['hp','t2d']},
+  {n:'Rajma chawal',m:'lunch',d:'1 cup rajma curry + 1 cup rice',cal:480,p:22,cb:88,f:5,b:['lgi']},
+  {n:'Chana masala + 2 roti',m:'lunch',d:'1 cup chickpea curry + 2 whole wheat roti',cal:520,p:24,cb:82,f:10,b:['lgi','t2d']},
+  {n:'Palak paneer + 2 roti',m:'lunch',d:'200g palak paneer + 2 whole wheat roti',cal:530,p:24,cb:46,f:26,b:['hp']},
+  {n:'Basa fish curry + rice',m:'lunch',d:'150g basa fish curry + 1 cup rice',cal:430,p:32,cb:52,f:8,b:['hp','t2d']},
+  {n:'Chicken keema + 2 roti',m:'lunch',d:'150g spiced chicken mince + 2 roti',cal:510,p:36,cb:38,f:18,b:['hp']},
+  {n:'Millet khichdi + curd',m:'lunch',d:'Bajra/foxtail millet + moong dal + curd',cal:420,p:16,cb:68,f:7,b:['lgi','t2d','wl']},
+  {n:'Quinoa + grilled chicken + salad',m:'lunch',d:'1 cup quinoa + 150g grilled chicken + greens',cal:500,p:44,cb:44,f:10,b:['hp','lgi','t2d']},
+  {n:'Barley + dal stew',m:'lunch',d:'½ cup barley + 1 cup masoor dal',cal:380,p:18,cb:68,f:4,b:['lgi','t2d','wl']},
+  {n:'Chicken salad bowl (no rice)',m:'lunch',d:'120g chicken, cucumber, tomato, onion, lemon',cal:250,p:28,cb:10,f:10,b:['hp','t2d','wl']},
+  {n:'Grilled chicken + sabzi + 2 roti',m:'dinner',d:'150g grilled chicken + 2 roti + veg curry',cal:520,p:44,cb:38,f:14,b:['hp','t2d']},
+  {n:'Paneer bhurji + 2 roti',m:'dinner',d:'200g paneer bhurji + 2 roti',cal:620,p:36,cb:42,f:34,b:['hp']},
+  {n:'Mutton curry + 2 roti',m:'dinner',d:'150g mutton curry + 2 whole wheat roti',cal:580,p:32,cb:38,f:24,b:['hp']},
+  {n:'Basa fish + dal + small rice',m:'dinner',d:'150g basa + 1 cup moong dal + ½ cup rice',cal:490,p:38,cb:62,f:8,b:['hp','t2d']},
+  {n:'Tandoori chicken + raita + 1 roti',m:'dinner',d:'150g tandoori chicken + cucumber raita',cal:450,p:40,cb:28,f:16,b:['hp','t2d']},
+  {n:'Palak chicken + bajra roti',m:'dinner',d:'150g chicken in spinach gravy + 2 bajra roti',cal:510,p:40,cb:42,f:16,b:['hp','lgi','t2d']},
+  {n:'Grilled basa + sweet potato + salad',m:'dinner',d:'150g baked basa + 1 medium sweet potato',cal:340,p:30,cb:38,f:6,b:['hp','t2d','wl']},
+  {n:'Masoor dal + bajra roti',m:'dinner',d:'1 cup masoor dal + 2 bajra roti',cal:420,p:18,cb:68,f:8,b:['lgi','t2d','wl']},
+  {n:'Egg curry + 2 roti',m:'dinner',d:'3 egg curry + 2 whole wheat roti',cal:480,p:26,cb:44,f:18,b:['hp','t2d']},
+  {n:'Casein protein shake + almonds',m:'dinner',d:'1 scoop casein in milk + 10 almonds (night recovery)',cal:260,p:28,cb:14,f:10,b:['hp']},
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let CP=null, CD=new Date(), LOG={}, WAT={}, WKD={};
+let AMI=null, SF=null, ST=null, QM='g', AWD=null, IF='all';
+
+function dk(d){return d.toISOString().split('T')[0];}
+function tgt(){return PROFILES[CP].tgt;}
+function im(){return CP==='manasa';}
+function ac(){return im()?'var(--pnk)':'var(--pur)';}
+function acbg(){return im()?'var(--pnk-bg)':'var(--pur-bg)';}
+function acS(){return im()?'am':'as';}
+
+// ── SYNC BAR ─────────────────────────────────────────────────────────────────
+function sb(msg,col){const e=document.getElementById('syncbar');e.textContent=msg;e.style.color=col||'var(--mut)';}
+
+// ── FIREBASE SAVE/LOAD ────────────────────────────────────────────────────────
+async function save(){
+  const k=dk(CD); sb('Saving...','var(--amb)');
+  try{
+    const {set,ref}=window._fb;
+    await set(ref(window._db,`users/${CP}/${k}`),{
+      log:LOG[CP]?.[k]||{}, water:WAT[CP]?.[k]||0, workout:WKD[CP]?.[k]||{}
+    });
+    sb('Saved ✓','var(--grn)'); setTimeout(()=>sb(''),2000);
+  }catch(e){sb('Offline — saved locally','var(--mut)');saveLoc();}
+}
+
+function saveLoc(){
+  localStorage.setItem('fht-l',JSON.stringify(LOG));
+  localStorage.setItem('fht-w',JSON.stringify(WAT));
+  localStorage.setItem('fht-wk',JSON.stringify(WKD));
+}
+
+async function load(){
+  const k=dk(CD); sb('Loading...','var(--amb)');
+  try{
+    const {get,ref}=window._fb;
+    const snap=await get(ref(window._db,`users/${CP}/${k}`));
+    if(snap.exists()){
+      const d=snap.val();
+      if(!LOG[CP])LOG[CP]={}; if(!WAT[CP])WAT[CP]={}; if(!WKD[CP])WKD[CP]={};
+      LOG[CP][k]=d.log||{}; WAT[CP][k]=d.water||0; WKD[CP][k]=d.workout||{};
+    }
+    sb('');
+  }catch(e){sb('Offline mode','var(--mut)');}
+  render();
+}
+
+function loadLoc(){
+  LOG=JSON.parse(localStorage.getItem('fht-l')||'{}');
+  WAT=JSON.parse(localStorage.getItem('fht-w')||'{}');
+  WKD=JSON.parse(localStorage.getItem('fht-wk')||'{}');
+}
+
+// ── PROFILE ───────────────────────────────────────────────────────────────────
+function selectProfile(p){
+  CP=p; AWD=new Date().toLocaleDateString('en-AU',{weekday:'long'});
+  document.getElementById('pscreen').style.display='none';
+  document.getElementById('mainapp').style.display='block';
+  applyTheme(); load();
+}
+
+function switchProfile(){
+  document.getElementById('mainapp').style.display='none';
+  document.getElementById('pscreen').style.display='flex';
+}
+
+function applyTheme(){
+  const pr=PROFILES[CP]; const m=im();
+  document.getElementById('apptit').textContent=pr.name+"'s Tracker";
+  document.getElementById('appsub').textContent=pr.goal;
+  const av=document.getElementById('topav');
+  av.textContent=pr.init;
+  av.style.cssText=`background:${pr.abg};border:2px solid ${pr.ac};color:${pr.ac};width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;`;
+  document.getElementById('ptgt').textContent=pr.tgt.p+'g';
+  document.getElementById('ctgt').textContent=pr.tgt.c+'g';
+  document.getElementById('ftgt').textContent=pr.tgt.f+'g';
+  document.getElementById('caltgt').textContent='/ '+pr.tgt.cal+' kcal';
+  const rem=document.getElementById('calrem');
+  rem.style.background=m?'var(--pnk-bg)':'var(--grn-bg)';
+  rem.style.color=m?'var(--pnk)':'var(--grn)';
+  document.getElementById('tp').style.color=ac();
+  document.getElementById('barp').style.background=ac();
+  switchTab('log');
+}
+
+// ── DATE ─────────────────────────────────────────────────────────────────────
+function changeDate(dir){CD=new Date(CD);CD.setDate(CD.getDate()+dir);load();}
+
+function updDate(){
+  const today=new Date(); const k=dk(CD); const y=new Date(today); y.setDate(y.getDate()-1);
+  document.getElementById('dlbl').textContent=k===dk(today)?'Today':k===dk(y)?'Yesterday':CD.toLocaleDateString('en-AU',{weekday:'long'});
+  document.getElementById('dsub').textContent=CD.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+}
+
+// ── LOG HELPERS ───────────────────────────────────────────────────────────────
+function getLog(){const k=dk(CD);if(!LOG[CP])LOG[CP]={};if(!LOG[CP][k])LOG[CP][k]={};MEALS.forEach(m=>{if(!LOG[CP][k][m.id])LOG[CP][k][m.id]=[];});return LOG[CP][k];}
+function getWat(){const k=dk(CD);if(!WAT[CP])WAT[CP]={};return WAT[CP][k]||0;}
+function setWat(n){const k=dk(CD);if(!WAT[CP])WAT[CP]={};WAT[CP][k]=n;}
+function getWkd(){const k=dk(CD);if(!WKD[CP])WKD[CP]={};if(!WKD[CP][k])WKD[CP][k]={};return WKD[CP][k];}
+
+// ── TOTALS ────────────────────────────────────────────────────────────────────
+function getTotals(){const l=getLog();let cal=0,p=0,c=0,f=0;MEALS.forEach(m=>{(l[m.id]||[]).forEach(i=>{cal+=i.cal;p+=i.p;c+=i.c;f+=i.f;});});return{cal:Math.round(cal),p:Math.round(p),c:Math.round(c),f:Math.round(f)};}
+
+function updTotals(){
+  const t=getTotals(); const tg=tgt();
+  document.getElementById('tcal').textContent=t.cal.toLocaleString();
+  document.getElementById('calrem').textContent=Math.max(0,tg.cal-t.cal)+' left';
+  document.getElementById('tp').textContent=t.p+'g'; document.getElementById('tc').textContent=t.c+'g'; document.getElementById('tf').textContent=t.f+'g';
+  document.getElementById('ppct').textContent=Math.round(t.p/tg.p*100)+'%';
+  document.getElementById('cpct').textContent=Math.round(t.c/tg.c*100)+'%';
+  document.getElementById('fpct').textContent=Math.round(t.f/tg.f*100)+'%';
+  document.getElementById('barp').style.width=Math.min(100,Math.round(t.p/tg.p*100))+'%';
+  document.getElementById('barc').style.width=Math.min(100,Math.round(t.c/tg.c*100))+'%';
+  document.getElementById('barf').style.width=Math.min(100,Math.round(t.f/tg.f*100))+'%';
+}
+
+// ── WATER ─────────────────────────────────────────────────────────────────────
+function updWater(){
+  const w=getWat();
+  document.getElementById('wcnt').textContent=w+' / 8 glasses';
+  document.getElementById('wcnt').style.color=w>=8?'var(--grn)':'var(--blu)';
+  const cont=document.getElementById('glasses'); cont.innerHTML='';
+  for(let i=1;i<=8;i++){const g=document.createElement('div');g.className='glass'+(i<=w?' on':'');g.textContent='💧';g.onclick=()=>{const cw=getWat();setWat(cw===i?i-1:i);save();updWater();};cont.appendChild(g);}
+}
+
+// ── MEAL LOG ──────────────────────────────────────────────────────────────────
+function rendMeals(){
+  const l=getLog(); const cont=document.getElementById('mealscont'); cont.innerHTML='';
+  MEALS.forEach(m=>{
+    const items=l[m.id]||[]; const mc=items.reduce((s,i)=>s+i.cal,0);
+    const div=document.createElement('div'); div.className='mblock';
+    div.innerHTML=`<div class="mhead"><span class="mtit">${m.icon} ${m.lbl}</span><span class="mkcal">${mc>0?Math.round(mc)+' kcal':''}</span></div>
+      ${items.map((item,idx)=>`<div class="fcard"><div class="flft"><div class="fn">${item.name}</div><div class="fq">${item.qty}</div></div><div class="frgt"><div class="fp" style="color:${ac()}">${Math.round(item.p)}g P</div><div class="fd">${Math.round(item.c)}g C · ${Math.round(item.f)}g F · ${Math.round(item.cal)} kcal</div></div><button class="frm" onclick="removeFood('${m.id}',${idx})">×</button></div>`).join('')}
+      <button class="addbtn" onclick="openModal('${m.id}','${m.lbl}')">+ add to ${m.lbl.toLowerCase()}</button>`;
+    cont.appendChild(div);
+  });
+}
+
+function removeFood(mid,idx){const k=dk(CD);LOG[CP][k][mid].splice(idx,1);save();rendMeals();updTotals();rendSum();}
+
+// ── WORKOUT ───────────────────────────────────────────────────────────────────
+function rendWorkout(){
+  const plan=WK[CP]; const days=Object.keys(plan); const done=getWkd();
+  const dp=plan[AWD]||plan[days[0]]; const m=im();
+  const dc=dp.ex.filter((_,i)=>done[AWD+'_'+i]).length;
+  const bc=dp.ex.reduce((s,e,i)=>s+(done[AWD+'_'+i]?e.c:0),0);
+  const tc=dp.ex.reduce((s,e)=>s+e.c,0);
+  const pct=dp.ex.length?Math.round(dc/dp.ex.length*100):0;
+  let html = '';
+  html += '<div class="daysrow">'+days.map(d=>'<button class="daybtn '+(d===AWD?acS():'')+'" onclick="selDay(\''+d+'\')">'+d.slice(0,3)+'</button>').join('')+'</div>';
+  html += '<div class="wdtit">'+AWD+'</div><div class="wdsub">'+dp.f+'</div>';
+  html += '<div class="wprog"><div class="wprow"><div class="wplbl">Exercises done</div><div class="wpval" style="color:'+ac()+'">'+dc+' / '+dp.ex.length+'</div></div><div class="wpbar"><div class="wpfil" style="width:'+pct+'%;background:'+ac()+'"></div></div></div>';
+  html += '<div class="burncard"><div class="bcl"><div class="bctit">Calories burned</div><div class="bcsub">'+bc+' of '+tc+' kcal estimated</div></div><div class="bcval">'+bc+'</div></div>';
+  dp.ex.forEach(function(ex,i){
+    const isDone=!!done[AWD+'_'+i]; const isRest=ex.c===0&&ex.s==='—';
+    html += '<div class="exblock"><div class="exh" onclick="togEx('+i+')">';
+    html += '<div class="exchk '+(isDone?(m?'dm':'ds'):'')+'">'+(isDone?'✓':'')+'</div>';
+    html += '<div class="exinfo"><div class="exname">'+ex.n+'</div><div class="exmeta">'+ex.s+(ex.d&&ex.d!=='—'?' · '+ex.d:'')+'</div></div>';
+    if(ex.c>0) html += '<div class="exkcal">'+ex.c+' kcal</div>';
+    html += '</div>';
+    html += '<div class="exdet">';
+    if(!isRest){
+      html += '<div class="exgrid"><div class="excard"><div class="eclbl">Sets / Reps</div><div class="ecval">'+ex.s+'</div></div><div class="excard"><div class="eclbl">Duration</div><div class="ecval">'+ex.d+'</div></div></div>';
+    }
+    html += '<div class="extip">'+ex.t+'</div>';
+    if(!isRest){
+      html += '<button class="eg-guidebtn" onclick="openExGuide(\''+ex.n+'\',\''+ex.s+'\',\''+ex.d+'\','+ex.c+','+isDone+','+i+')" style="border-color:'+ac()+';color:'+ac()+'">&#9654; See exercise guide & video</button>';
+    }
+    html += '</div></div>';
+  });
+  document.getElementById('wkcont').innerHTML=html;
+  // Add custom workout log button and entries
+  const cwCont = document.createElement('div');
+  const k2=dk(CD);
+  const customWks=(WKD[CP]?.[k2]?.custom)||[];
+  const cwBurnTotal = customWks.reduce((s,w)=>s+(w.cal||0),0);
+  let cwHtml = '<button class="add-custom-wk-btn" onclick="openCW()">+ Log your own workout</button>';
+  if(customWks.length>0){
+    cwHtml += '<div style="margin-top:12px"><div class="wplbl" style="margin-bottom:8px">Custom workouts today — '+cwBurnTotal+' kcal burned</div>';
+    cwHtml += customWks.map((w,i)=>`<div class="cw-log-item"><div><div class="cw-log-name">${w.name}</div><div class="cw-log-meta">${[w.dur?w.dur+' min':'',w.sets?w.sets+' sets':'',w.reps?w.reps+' reps':''].filter(Boolean).join(' · ')}</div></div>${w.cal>0?'<div class="cw-log-cal">'+w.cal+' kcal</div>':''}</div>`).join('');
+    cwHtml += '</div>';
+  }
+  cwCont.innerHTML = cwHtml;
+  document.getElementById('wkcont').appendChild(cwCont);
+}
+function selDay(d){AWD=d;rendWorkout();}
+
+function togEx(idx){
+  const done=getWkd(); const key=AWD+'_'+idx; done[key]=!done[key];
+  const k=dk(CD); if(!WKD[CP])WKD[CP]={}; if(!WKD[CP][k])WKD[CP][k]={}; WKD[CP][k]=done;
+  save(); rendWorkout();
+}
+
+// ── IDEAS ─────────────────────────────────────────────────────────────────────
+function filterIdeas(f,btn){IF=f;document.querySelectorAll('.ifbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rendIdeas();}
+
+function rendIdeas(){
+  const m=im(); const list=IF==='all'?IDEAS:IDEAS.filter(i=>i.m===IF);
+  const bcl={hp:'bhp',lgi:'bgi',t2d:'bt',wl:'bwl'};
+  const bln={hp:'High P',lgi:'Low GI',t2d:'T2D',wl:'Weight loss'};
+  document.getElementById('ideaslist').innerHTML=list.map(i=>`
+    <div class="icard"><div class="itop"><div class="iname">${i.n}</div><div class="ibadges">${i.b.map(b=>`<span class="ibadge ${bcl[b]}">${bln[b]}</span>`).join('')}</div></div>
+    <div class="idesc">${i.d}</div>
+    <div class="imacs"><span class="imac" style="color:${ac()}">${i.p}g P</span><span class="imac">· ${i.cb}g C</span><span class="imac">· ${i.f}g F</span><span class="imac">· ${i.cal} kcal</span></div>
+    <div class="ifoot"><span class="itag">${i.m.charAt(0).toUpperCase()+i.m.slice(1)}</span><button class="iaddbtn" onclick='addIdea(${JSON.stringify(i)})'>+ add to log</button></div></div>`).join('');
+}
+
+function addIdea(idea){
+  const mm={breakfast:'breakfast',lunch:'lunch',dinner:'dinner',snack:'morning-snack'};
+  const mid=mm[idea.m]||'lunch'; const k=dk(CD);
+  if(!LOG[CP])LOG[CP]={}; if(!LOG[CP][k])LOG[CP][k]={}; if(!LOG[CP][k][mid])LOG[CP][k][mid]=[];
+  LOG[CP][k][mid].push({name:idea.n,qty:'1 serving',cal:idea.cal,p:idea.p,c:idea.cb,f:idea.f});
+  save(); rendMeals(); updTotals(); rendSum(); switchTab('log');
+}
+
+// ── SUMMARY ───────────────────────────────────────────────────────────────────
+function rendSum(){
+  const t=getTotals(); const tg=tgt(); const w=getWat(); const m=im();
+  const pp=Math.round(t.p/tg.p*100); const cp=Math.round(t.c/tg.c*100);
+  const fp=Math.round(t.f/tg.f*100); const calp=Math.round(t.cal/tg.cal*100);
+  const done=getWkd(); const plan=WK[CP][AWD]; const pl=plan?plan.ex:[];
+  const dc=pl.filter((_,i)=>done[AWD+'_'+i]).length;
+  const bc=pl.reduce((s,e,i)=>s+(done[AWD+'_'+i]?e.c:0),0);
+  function sc(p){return p>=80?'sg':p>=50?'sw':'sl';}
+  function st(p){return p>=80?'✓ On track':p>=50?'~ Getting there':'↓ Low';}
+  const tips=[];
+  if(pp<80)tips.push({tit:'Protein reminder',txt:`Need ${tg.p-t.p}g more protein. Try eggs, paneer, chicken, or a whey shake.`});
+  if(m&&calp>95)tips.push({tit:'Calorie watch',txt:`Near your ${tg.cal} kcal limit. Keep dinner light — soup, dal, or salad.`});
+  if(!m&&t.cal<2000)tips.push({tit:'Calorie surplus needed',txt:`Only ${t.cal} kcal so far. Need a surplus to build muscle. Add a meal or shake.`});
+  if(w<6)tips.push({tit:'Drink more water',txt:`Only ${w} glasses so far. Aim for 8 — especially important on Metformin.`});
+  document.getElementById('sumcont').innerHTML=`
+    <div class="scard"><div class="stit">Today's nutrition</div>
+      <div class="srow"><span class="slbl">Calories</span><span class="sval ${sc(calp)}">${t.cal} / ${tg.cal} kcal — ${st(calp)}</span></div>
+      <div class="srow"><span class="slbl">Protein</span><span class="sval ${sc(pp)}">${t.p}g / ${tg.p}g — ${st(pp)}</span></div>
+      <div class="srow"><span class="slbl">Carbs</span><span class="sval ${sc(cp)}">${t.c}g / ${tg.c}g — ${st(cp)}</span></div>
+      <div class="srow"><span class="slbl">Fats</span><span class="sval ${sc(fp)}">${t.f}g / ${tg.f}g — ${st(fp)}</span></div>
+      <div class="srow"><span class="slbl">Water</span><span class="sval ${w>=8?'sg':'sw'}">${w} / 8 glasses</span></div>
+    </div>
+    <div class="scard"><div class="stit">Today's workout</div>
+      <div class="srow"><span class="slbl">Exercises done</span><span class="sval" style="color:${ac()}">${dc} / ${pl.length}</span></div>
+      <div class="srow"><span class="slbl">Calories burned</span><span class="sval sw">${bc} kcal</span></div>
+      <div class="srow"><span class="slbl">Net calories</span><span class="sval">${t.cal-bc} kcal</span></div>
+    </div>
+    <div class="scard"><div class="stit">Your targets</div>
+      <div class="srow"><span class="slbl">Goal</span><span class="sval">${PROFILES[CP].goal}</span></div>
+      <div class="srow"><span class="slbl">Calories</span><span class="sval">${tg.cal} kcal/day</span></div>
+      <div class="srow"><span class="slbl">Protein</span><span class="sval">${tg.p}g/day</span></div>
+      <div class="srow"><span class="slbl">Carbs</span><span class="sval">${tg.c}g/day</span></div>
+      <div class="srow"><span class="slbl">Fats</span><span class="sval">${tg.f}g/day</span></div>
+    </div>
+    ${tips.map(tip=>`<div class="tipcard"><div class="tiptit">💡 ${tip.tit}</div><div class="tiptxt">${tip.txt}</div></div>`).join('')}`;
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+function switchTab(tab){
+  ['log','workout','ideas','summary'].forEach(t=>{
+    document.getElementById('t'+t).className='tab';
+    document.getElementById('p'+t).classList.remove('on');
+  });
+  document.getElementById('t'+tab).className='tab '+acS();
+  document.getElementById('p'+tab).classList.add('on');
+  if(tab==='summary')rendSum();
+  if(tab==='ideas')rendIdeas();
+  if(tab==='workout')rendWorkout();
+}
+
+// ── FOOD MODAL ────────────────────────────────────────────────────────────────
+function openModal(mid,mlbl){
+  AMI=mid; SF=null;
+  document.getElementById('modtit').textContent='Add to '+mlbl;
+  document.getElementById('sinp').value='';
+  document.getElementById('qg').value='100'; document.getElementById('qq').value='1';
+  QM='g'; setMode('g');
+  document.getElementById('rlist').innerHTML='<div class="smsg">Start typing to search foods...</div>';
+  document.getElementById('prevbox').classList.remove('on');
+  document.getElementById('confbtn').disabled=true;
+  document.getElementById('confbtn').textContent='Select a food to add';
+  document.getElementById('modal').classList.add('on');
+  setTimeout(()=>document.getElementById('sinp').focus(),100);
+}
+function closeModal(){document.getElementById('modal').classList.remove('on');}
+
+function setMode(m){
+  QM=m;
+  document.getElementById('grows').style.display=m==='g'?'flex':'none';
+  document.getElementById('qrows').style.display=m==='q'?'flex':'none';
+  document.getElementById('mg').className='mbtn'+(m==='g'?' on':'');
+  document.getElementById('mq').className='mbtn'+(m==='q'?' on':'');
+  updHint(); updPrev();
+}
+
+function getSS(name){const n=name.toLowerCase();for(const[k,v]of Object.entries(SS)){if(n.includes(k))return v;}return null;}
+
+function updHint(){
+  const hint=document.getElementById('shint'); const ul=document.getElementById('qunit');
+  if(!SF||QM!=='q'){hint.style.display='none';return;}
+  const sv=getSS(SF.n);
+  if(sv){ul.textContent=sv.u;hint.style.display='block';hint.textContent='1 '+sv.u+' ≈ '+sv.g+'g';}
+  else{ul.textContent='pieces';hint.style.display='block';hint.textContent='Using 100g per piece as default';}
+}
+
+function getGrams(){
+  if(QM==='g')return parseFloat(document.getElementById('qg').value)||100;
+  const pcs=parseFloat(document.getElementById('qq').value)||1;
+  const sv=SF?getSS(SF.n):null; return pcs*(sv?sv.g:100);
+}
+
+function getQtyLbl(){
+  if(QM==='g')return(parseFloat(document.getElementById('qg').value)||100)+'g';
+  const pcs=parseFloat(document.getElementById('qq').value)||1;
+  const sv=SF?getSS(SF.n):null; const u=sv?sv.u:'piece';
+  return pcs+' '+(pcs===1?u:u+'s');
+}
+
+function updPrev(){
+  if(!SF)return;
+  const g=getGrams(); const r=g/100;
+  document.getElementById('prevbox').classList.add('on');
+  document.getElementById('prevname').textContent=SF.n+' · '+getQtyLbl()+(QM==='q'?' ('+Math.round(g)+'g)':'');
+  document.getElementById('pvcal').textContent=Math.round(SF.cal*r);
+  document.getElementById('pvp').textContent=Math.round(SF.p*r)+'g';
+  document.getElementById('pvc').textContent=Math.round(SF.cb*r)+'g';
+  document.getElementById('pvf').textContent=Math.round(SF.f*r)+'g';
+  updHint();
+}
+
+function onSearch(val){
+  clearTimeout(ST);
+  if(val.trim().length<2){document.getElementById('rlist').innerHTML='<div class="smsg">Type at least 2 characters...</div>';return;}
+  document.getElementById('rlist').innerHTML='<div class="smsg">Searching...</div>';
+  ST=setTimeout(()=>doSearch(val.trim()),300);
+}
+
+function doSearch(q){
+  const ql=q.toLowerCase().trim(); const words=ql.split(/\s+/).filter(Boolean);
+  const scored=FDB.map(f=>{
+    const nm=f.n.toLowerCase(); const ct=f.c.toLowerCase(); let sc=0;
+    if(nm===ql)sc+=100; if(nm.startsWith(ql))sc+=50; if(nm.includes(ql))sc+=40;
+    if(ct.includes(ql))sc+=20;
+    words.forEach(w=>{if(nm.includes(w))sc+=15;if(ct.includes(w))sc+=5;});
+    return{food:f,sc};
+  }).filter(r=>r.sc>0).sort((a,b)=>b.sc-a.sc).slice(0,15).map(r=>r.food);
+  if(scored.length>0)rendResults(scored); else fetchAI(q);
+}
+
+async function fetchAI(q){
+  document.getElementById('rlist').innerHTML='<div class="smsg">Looking up nutrition data...</div>';
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',
+        content:`Nutrition per 100g for: "${q}". Return ONLY a JSON array, no markdown. Format: [{"n":"Food name","c":"Category","cal":number,"p":number,"cb":number,"f":number}] where cb=carbs. Up to 5 items.`}]})});
+    const data=await resp.json();
+    const text=data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    rendResults(JSON.parse(text));
+  }catch(e){document.getElementById('rlist').innerHTML='<div class="smsg">No results found. Try different search.</div>';}
+}
+
+function rendResults(foods){
+  const list=document.getElementById('rlist');
+  if(!foods||foods.length===0){list.innerHTML='<div class="smsg">No results found.</div>';return;}
+  list.innerHTML=foods.map((f,i)=>`
+    <div class="ritem" onclick="selFood(${i})" id="ri${i}">
+      <div><div class="rname">${f.n}</div><div class="rcat">${f.c} · per 100g</div></div>
+      <div class="rmacs"><strong>${f.p}g P</strong><br>${f.cb}g C · ${f.f}g F<br>${f.cal} kcal</div>
+    </div>`).join('');
+  list._foods=foods;
+}
+
+function selFood(idx){
+  const list=document.getElementById('rlist'); const foods=list._foods; if(!foods)return;
+  SF=foods[idx];
+  document.querySelectorAll('.ritem').forEach(e=>e.classList.remove('on'));
+  document.getElementById('ri'+idx).classList.add('on');
+  updHint(); updPrev();
+  document.getElementById('confbtn').disabled=false;
+  document.getElementById('confbtn').textContent='Add to meal';
+}
+
+function confirmAdd(){
+  if(!SF||!AMI)return;
+  const g=getGrams(); const r=g/100;
+  const item={name:SF.n,qty:getQtyLbl(),cal:SF.cal*r,p:SF.p*r,c:SF.cb*r,f:SF.f*r};
+  const k=dk(CD);
+  if(!LOG[CP])LOG[CP]={}; if(!LOG[CP][k])LOG[CP][k]={}; if(!LOG[CP][k][AMI])LOG[CP][k][AMI]=[];
+  LOG[CP][k][AMI].push(item);
+  save(); closeModal(); rendMeals(); updTotals(); rendSum();
+}
+
+// ── MAIN RENDER ───────────────────────────────────────────────────────────────
+function render(){updDate();updTotals();updWater();rendMeals();rendSum();rendIdeas();}
+
+// ── FIREBASE INIT ─────────────────────────────────────────────────────────────
+// Replace these values with your Firebase project config
+// Get them from: Firebase Console → Project Settings → Your apps → SDK setup
+const FB_CONFIG={
+  apiKey:"AIzaSyC-JFc1BCFMcqCGN1KO6In-zW3nT096RZk",
+  authDomain:"family-health-tracker-27128.firebaseapp.com",
+  databaseURL:"https://family-health-tracker-27128-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"family-health-tracker-27128",
+  storageBucket:"family-health-tracker-27128.firebasestorage.app",
+  messagingSenderId:"489881715487",
+  appId:"1:489881715487:web:d5f84ad39d655ded28262a",
+  measurementId:"G-3TDR2WE8N1"
+};
+
+async function initFirebase(){
+  const m=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+  const d=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+  const app=m.initializeApp(FB_CONFIG);
+  window._db=d.getDatabase(app);
+  window._fb={ref:d.ref,set:d.set,get:d.get};
+}
+
+// Expose globals
+window.selectProfile=selectProfile; window.switchProfile=switchProfile;
+window.changeDate=changeDate; window.switchTab=switchTab;
+window.openModal=openModal; window.closeModal=closeModal;
+window.setMode=setMode; window.onSearch=onSearch; window.updPrev=updPrev;
+window.selFood=selFood; window.confirmAdd=confirmAdd;
+window.removeFood=removeFood; window.selDay=selDay; window.togEx=togEx;
+window.filterIdeas=filterIdeas; window.addIdea=addIdea;
+
+loadLoc();
+initFirebase().catch(()=>sb('Firebase not configured — running in local mode','var(--mut)'));
+</script>
+
+<div class="exguide" id="exguide">
+  <div class="eg-hdr">
+    <button class="eg-back" onclick="closeExGuide()">← Back</button>
+    <div class="eg-info"><h3 id="eg-title"></h3><p id="eg-meta"></p></div>
+  </div>
+  <div class="eg-body" id="eg-body"></div>
+</div>
+
+<script>
+const EXDB={
+'Push-ups':{yt:'IODxDxX7oi4',yt_title:'Push-Ups — Perfect Form Guide',yt_ch:'Athlean-X',muscles:['Chest','Triceps','Shoulders','Core'],tip:'Elbows track slightly back — not flaring wide. Lower until chest nearly touches the floor.',steps:['Start in a high plank — hands shoulder-width, arms straight, body in one rigid line from head to heel.','Bend elbows and lower chest toward floor. Elbows at roughly 45° to your body. Feel the chest stretch.','Press through palms. Fully extend arms at top. Breathe out on the way up.']},
+'Wide push-ups (chest)':{yt:'IODxDxX7oi4',yt_title:'Push-Up Variations — Chest Focus',yt_ch:'Athlean-X',muscles:['Outer chest','Shoulders','Triceps'],tip:'Wider hands = more outer chest activation. Feel the bigger stretch across your chest as you lower.',steps:['Hands 1.5× shoulder-width apart, fingers slightly outward. Body in a straight line.','Lower with elbows flaring out to the sides. Feel the wide chest stretch.','Press through chest. Squeeze pecs hard at the top. Full arm extension.']},
+'Knee push-ups':{yt:'IODxDxX7oi4',yt_title:'Knee Push-Ups — Proper Form',yt_ch:'Athlean-X',muscles:['Chest','Triceps','Shoulders'],tip:'Body stays straight from KNEES to head — not bent at the hip. This is a real exercise.',steps:['Knees on floor, hands shoulder-width. Body in a straight line from knees to head.','Lower chest toward floor with control — same motion as a full push-up.','Press back up, arms fully extended. Your stepping stone to full push-ups.']},
+'Pike push-ups (shoulders)':{yt:'ch_e6S3pV0',yt_title:'Pike Push-Ups — Shoulder Builder',yt_ch:'Buff Dudes',muscles:['Shoulders','Triceps','Upper chest'],tip:'The higher your hips, the more shoulder work. Think inverted V shape.',steps:['Start in downward dog — hips high, forming a triangle.','Bend arms, lower your head toward the floor between your hands.','Press through palms to return to inverted V. Shoulders do all the work.']},
+'Tricep dips on chair':{yt:'0326dy_-CzM',yt_title:'How to do Tricep Dips on Chair',yt_ch:'Howcast',muscles:['Triceps','Shoulders','Chest'],tip:'Keep back close to chair. Elbows point straight back — not flaring sideways.',steps:['Hands grip chair edge beside hips. Slide hips off the seat, legs extended.','Bend elbows straight back, lower hips toward floor until arms hit 90°.','Push through hands, extend arms fully. Squeeze triceps at the top.']},
+'Plank hold':{yt:'ASdvN_XEl_c',yt_title:'Perfect Plank Form',yt_ch:'Jeff Nippard',muscles:['Core','Shoulders','Glutes','Back'],tip:'Squeeze glutes AND abs at the same time. Shaking means it\'s working.',steps:['Elbows under shoulders, forearms flat. Toes on floor. Lift body up.','Body forms one rigid straight line — head to heel. No sagging or piking.','Tighten everything, breathe steadily. Add 5 seconds each session.']},
+'Plank shoulder taps':{yt:'ASdvN_XEl_c',yt_title:'Plank Shoulder Taps — Core Stability',yt_ch:'Jeff Nippard',muscles:['Core','Shoulders','Obliques'],tip:'Go SLOW — keeping hips from rotating is the whole challenge. That\'s all the core work.',steps:['High plank — hands under shoulders, feet slightly wider for balance.','Lift one hand, tap opposite shoulder slowly. Hips stay perfectly level.','Return hand with full control. Switch sides. Slow beats fast here.']},
+'Bodyweight squats':{yt:'U3HlEF_whyU',yt_title:'How to do Squats — Perfect Form',yt_ch:'ScottHermanFitness',muscles:['Quads','Glutes','Hamstrings','Core'],tip:'Think "sit back onto a chair" not just "bend knees". Chest tall, weight on heels.',steps:['Stand tall, feet shoulder-width, toes slightly out. Arms forward for balance.','Push hips BACK first, then bend knees. Lower until thighs are parallel to floor.','Drive through heels to stand. Squeeze glutes hard at the top.']},
+'Jump squats':{yt:'U3HlEF_whyU',yt_title:'Jump Squat — Power and Cardio',yt_ch:'ScottHermanFitness',muscles:['Quads','Glutes','Calves','Cardio'],tip:'Land with soft BENT knees every time. Never land stiff-legged.',steps:['Lower into squat. Arms swing back to load energy like a spring.','Drive explosively through heels. Swing arms forward for lift.','Land with soft bent knees. Flow straight into the next squat.']},
+'Lunges (alternating)':{yt:'D7KaRcUTQeE',yt_title:'Perfect Lunge Form',yt_ch:'Howcast',muscles:['Quads','Glutes','Hamstrings','Balance'],tip:'Front knee stays over your ankle — never past toes. Bigger step = less knee strain.',steps:['Stand tall, hands on hips. Core engaged.','Take a long stride forward. Lower back knee toward floor. Front knee over ankle.','Push powerfully off front foot to stand. Alternate legs.']},
+'Reverse lunges':{yt:'D7KaRcUTQeE',yt_title:'Reverse Lunge — Knee-Friendly',yt_ch:'Howcast',muscles:['Quads','Glutes','Balance'],tip:'Stepping back puts much less stress on the front knee than forward lunges.',steps:['Stand upright, feet hip-width. Hands on hips.','Step ONE foot BACK. Lower back knee toward floor. Front foot stays planted.','Push through front heel to return to standing. Alternate legs.']},
+'Glute bridges':{yt:'wPM8icPu6H8',yt_title:'Glute Bridge — Proper Form',yt_ch:'Athlean-X',muscles:['Glutes','Hamstrings','Lower back'],tip:'SQUEEZE glutes as hard as you can at the top for 1 full second. That squeeze is everything.',steps:['Lie on back, knees bent, feet flat hip-width apart. Arms at sides.','Press through heels, drive hips up. Squeeze glutes HARD at top. Hold 1 second.','Lower hips slowly — don\'t let them rest. Keeps glute tension throughout.']},
+'Bicep curls (water bottles)':{yt:'ykJmrZ5v0Oo',yt_title:'Bicep Curl — Perfect Form',yt_ch:'ScottHermanFitness',muscles:['Biceps','Forearms'],tip:'Slow lowering builds more muscle than curling up. Take 3 full seconds to lower.',steps:['Hold bottles palms forward, elbows tucked to sides. Stand tall.','Curl hands toward shoulders. Squeeze bicep hard at the very top.','Lower SLOWLY over 3–4 seconds. This slow phase is the most important part.']},
+'Towel door rows':{yt:'PKGFGGqzQPs',yt_title:'Home Back Workout — No Equipment',yt_ch:'Calisthenicmovement',muscles:['Back','Biceps','Rear shoulders'],tip:'Drive elbows BACK past your hips — not up. Squeeze shoulder blades at the top.',steps:['Loop towel around door handle. Lean back with arms straight, heels on floor.','Pull chest toward door, driving elbows back past hips. Squeeze shoulder blades.','Slowly extend arms back to start over 3 full seconds.']},
+'Superman holds':{yt:'z6PJMT2y8GQ',yt_title:'Superman — Lower Back Strength',yt_ch:'Athlean-X',muscles:['Lower back','Glutes','Hamstrings'],tip:'Lift arms AND legs at the exact same time. Squeeze glutes and hold 2 full seconds at top.',steps:['Lie flat on stomach. Arms forward, legs straight. Forehead resting down.','Simultaneously raise arms AND legs. Squeeze glutes hard. Hold 2 seconds.','Lower everything back with control. Brief rest, then repeat.']},
+'Dead hang (doorway)':{yt:'OPoKYhVAHC0',yt_title:'Dead Hang — Grip and Back',yt_ch:'Calisthenicmovement',muscles:['Grip strength','Lats','Spine'],tip:'Don\'t fully relax shoulders — keep slight upward tension to protect the joint.',steps:['Grab bar slightly wider than shoulder-width, overhand grip.','Let body hang with slight shoulder tension maintained.','Hold as long as possible. Build up to 60 seconds over weeks.']},
+'Seated shoulder press (bottles)':{yt:'qEwKCR5JCog',yt_title:'Shoulder Press — Form Guide',yt_ch:'ScottHermanFitness',muscles:['Shoulders','Triceps','Upper back'],tip:'Sit TALL — no arching lower back. If you need to lean back, bottles are too heavy.',steps:['Sit on chair edge, bottles at shoulder height, elbows at 90°. Core tight.','Press both bottles straight up until arms fully extend overhead.','Lower slowly over 3 seconds back to shoulder height.']},
+'Calf raises':{yt:'gwLzBJYoWlQ',yt_title:'Calf Raises — Full Range of Motion',yt_ch:'ScottHermanFitness',muscles:['Calves','Ankles'],tip:'Use a step edge so heels drop below — that full-range stretch is what makes this effective.',steps:['Balls of feet on step edge, heels hanging off. Touch wall for balance.','Rise as high as possible onto tiptoes. Squeeze calves hard at top.','Lower heels BELOW step level. Full calf stretch. Pause, then rise again.']},
+'Brisk walk':{yt:'njeZ29umqVE',yt_title:'Walking for Blood Sugar and Weight',yt_ch:'Walking Workouts',muscles:['Full body','Cardiovascular','Blood sugar control'],tip:'Walking after meals is one of the best things for T2D blood sugar. Even 10 minutes after eating helps.',steps:['Start slow for 2 minutes — let joints warm up and breathing settle.','Pick up to brisk pace. Warm, slightly breathless, but can still talk.','Cool down the last 2 minutes. Blood sugar drops most in this cool-down phase.']},
+'Brisk walk / jog intervals':{yt:'njeZ29umqVE',yt_title:'Walk-Jog Intervals — Fat Burn',yt_ch:'Walking Workouts',muscles:['Cardio','Legs','Heart and lungs'],tip:'The jog intervals are meant to be EASY — a light shuffle, not a sprint.',steps:['Walk briskly for 2 minutes. Active recovery — get your breath back.','Light jog for 1 minute. Slightly breathless but can say a few words.','Repeat 8 times (25 min total). Burns more fat than steady walking.']},
+'Jumping jacks':{yt:'CWpmIW6RKce',yt_title:'Jumping Jacks — Proper Form',yt_ch:'FitnessBlender',muscles:['Full body','Coordination','Cardio'],tip:'Land softly with bent knees. Low-impact: step side to side instead of jumping if needed.',steps:['Stand tall, feet together, arms at sides.','Jump feet wide apart while raising both arms overhead. Land softly.','Jump feet back together, arms return to sides. Smooth rhythm.']},
+'High knees marching':{yt:'ZZZoCNMU48U',yt_title:'High Knees — How to do Them Right',yt_ch:'FitnessBlender',muscles:['Hip flexors','Core','Cardio'],tip:'Drive from the HIP — the higher the knee, the more core and hip flexor you get.',steps:['Feet hip-width, arms bent at 90°. Core engaged.','Drive right knee UP to hip height. Left arm pumps forward at the same time.','Alternate in a marching rhythm. Build speed as you warm up.']},
+'Burpees (modified)':{yt:'dZgVxmf6jkA',yt_title:'Modified Burpees — No Jump Version',yt_ch:'FitnessBlender',muscles:['Full body','Chest','Legs','Core'],tip:'Stepping feet back instead of jumping still makes this a seriously effective full-body exercise.',steps:['Stand tall — this is where each rep starts and ends.','Bend down, hands to floor, STEP (not jump) feet back into plank.','Step feet back in, stand up. Add arm raise at top when ready.']},
+'Mountain climbers':{yt:'nmwgirgXLYM',yt_title:'Mountain Climbers — Perfect Form',yt_ch:'Athlean-X',muscles:['Core','Shoulders','Hip flexors','Cardio'],tip:'Keep hips LOW and level the whole time. Bouncing hips is the biggest mistake.',steps:['High plank — wrists under shoulders, body straight. Core tight.','Drive right knee toward chest. Hips stay level, foot off floor.','Switch legs in a running rhythm. Slow = core. Fast = cardio.']},
+'Mountain climbers (slow)':{yt:'nmwgirgXLYM',yt_title:'Slow Mountain Climbers — Core Focus',yt_ch:'Athlean-X',muscles:['Deep core','Hip flexors','Stability'],tip:'3 seconds in, hold 1 second, 3 seconds out. This tempo makes it a real core exercise.',steps:['High plank — solid base, core already tensioned.','Drive knee toward chest over 3 full seconds. Hips perfectly level.','Return slowly over 3 seconds. Switch sides. Feel the deep core burn.']},
+'Wall sit':{yt:'y-wV4Venusw',yt_title:'Wall Sit — How to do it Correctly',yt_ch:'Howcast',muscles:['Quads','Glutes','Calves'],tip:'Keep BREATHING throughout — holding breath makes it much harder than it needs to be.',steps:['Back flat against wall. Slide down slowly until thighs are parallel to floor.','Knees at 90°, back flat, feet flat on floor. Arms crossed on thighs.','Hold and breathe steadily. Build 5 seconds each session.']},
+'Dead bug exercise':{yt:'4XLEnwUr1d8',yt_title:'Dead Bug — Core Stability',yt_ch:'Jeff Nippard',muscles:['Deep core','Lower back stability'],tip:'Lower back MUST stay pressed to floor the entire time. If it lifts — you\'ve gone too far.',steps:['Lie on back, arms up, knees at 90° raised. Back pressed to floor.','Lower RIGHT arm and LEFT leg toward floor. Back stays pressed down throughout.','Return to centre, switch sides. Never rush this one.']},
+'Bicycle crunches':{yt:'9FGmVEWgZTM',yt_title:'Bicycle Crunches — Proper Form',yt_ch:'ScottHermanFitness',muscles:['Obliques','Core','Hip flexors'],tip:'Full rotation is the goal — elbow fully to opposite knee. A small twitch doesn\'t count.',steps:['Lie on back, hands lightly behind head. Legs raised, knees at 90°.','Bring RIGHT elbow fully to LEFT knee while extending right leg. Full rotation.','Alternate sides in cycling motion. Slow is harder and more effective.']},
+'Leg raises':{yt:'JB2oyawG9KQ',yt_title:'Leg Raises — Lower Abs',yt_ch:'Athlean-X',muscles:['Lower abs','Hip flexors','Core'],tip:'Lower back MUST stay pressed into floor. If it lifts, bend knees slightly to modify.',steps:['Lie flat, legs straight, arms at sides. Press lower back INTO floor.','Raise both legs together to 90°. Keep legs straight.','Lower SLOWLY over 4 seconds toward floor. Stop before back lifts.']},
+'Sumo squats':{yt:'qOoEnPELqYM',yt_title:'Sumo Squat — Inner Thigh and Glutes',yt_ch:'Howcast',muscles:['Inner thighs','Glutes','Quads'],tip:'Push knees OUTWARD in line with toes. Think of spreading the floor apart with your feet.',steps:['Feet wider than shoulder-width, toes out 45°. Hands together.','Lower straight down — not forward. Knees track outward in line with toes.','Drive through heels to stand. Squeeze inner thighs and glutes hard.']},
+'Donkey kicks':{yt:'SJ1Xuz9LYo0',yt_title:'Donkey Kicks — Glute Activation',yt_ch:'FitnessBlender',muscles:['Glutes','Lower back','Core'],tip:'The squeeze at the top for 1 full second is everything. No squeeze = no glute work.',steps:['On all fours — hands under shoulders, knees under hips. Back flat.','Keep knee bent 90°, drive heel straight UP toward ceiling. SQUEEZE glute hard.','Lower without touching floor. Keeps constant glute tension.']},
+'Fire hydrants':{yt:'la7fi22qEHk',yt_title:'Fire Hydrants — Hip and Glute',yt_ch:'FitnessBlender',muscles:['Outer glutes','Hip abductors','Core'],tip:'Hips must stay SQUARE to the floor. Don\'t tilt as you lift — that\'s the whole challenge.',steps:['On all fours — hips perfectly level throughout the exercise.','Keeping knee bent 90°, lift knee OUT to the side up to hip height.','Lower without touching floor. All reps one side, then switch.']},
+'Side-lying leg raises':{yt:'nxDhMFHkGkM',yt_title:'Side Leg Raises — Outer Glute',yt_ch:'FitnessBlender',muscles:['Outer glutes','Hip abductors'],tip:'Toes point FORWARD — not up to ceiling. Forward keeps focus on outer glute.',steps:['Lie on side, body straight. Bottom arm under head. Legs stacked.','Raise top leg with control. Toes pointing forward. As high as comfortable.','Lower slowly almost to bottom leg — don\'t touch. Maintains tension.']},
+'Step-ups on stair':{yt:'dQqApCGd5Ss',yt_title:'Step Ups — Legs and Glutes',yt_ch:'Howcast',muscles:['Quads','Glutes','Balance'],tip:'Drive through the HEEL of the foot on the step — not toes. Targets glutes much more.',steps:['Stand at base of step. Hands on hips, core engaged.','Place entire foot on step. Drive through heel to step up fully. Stand tall.','Step back down with control. Alternate leading leg each rep.']},
+'Squat to overhead press':{yt:'qEwKCR5JCog',yt_title:'Squat to Press — Full Body',yt_ch:'ScottHermanFitness',muscles:['Quads','Glutes','Shoulders','Full body'],tip:'The press should happen AS you rise from the squat — one fluid movement.',steps:['Bottles at shoulder height, elbows at 90°. Feet shoulder-width.','Lower into squat while keeping bottles at shoulders. Core tight.','Drive up from squat and press bottles overhead in one fluid motion.']},
+'Lateral side steps':{yt:'8op6DqCVWHE',yt_title:'Lateral Steps — Hip Abductors',yt_ch:'FitnessBlender',muscles:['Outer glutes','Hip abductors','Inner thighs'],tip:'Stay LOW the whole time. Standing up between steps removes all hip muscle tension.',steps:['Feet hip-width, knees in quarter-squat. Hands together. Stay low.','Step right foot wide right. Left foot follows. Don\'t stand up.','Reverse direction. Same low position throughout the whole set.']},
+'Seated forward fold':{yt:'g_tea8ZNk5A',yt_title:'Seated Forward Fold — Yoga',yt_ch:'Yoga With Adriene',muscles:['Hamstrings','Lower back','Calves'],tip:'Hinge from the HIPS not the waist. Keep spine long — not rounded.',steps:['Sit with legs extended. Sit TALL first — lengthen spine before folding.','Hinge forward from hips. Reach toward feet. Keep back long.','Hold and breathe for 20–30 seconds. Each exhale lets you go further.']},
+'Full body stretching':{yt:'g_tea8ZNk5A',yt_title:'Full Body Stretch — Recovery',yt_ch:'Yoga With Adriene',muscles:['Flexibility','Recovery'],tip:'Hold each stretch 20–30 seconds minimum — less than 20 sec creates no lasting change.',steps:['Chest opener: clasp hands behind back, open chest up. Hold 20–30 sec.','Hip flexor: kneeling lunge, push hips forward gently. 20–30 sec each side.','Hamstring: sit, reach for toes. Breathe deeply for 20–30 seconds.']},
+'Yoga flow (20 min)':{yt:'v7AYKMP6rOE',yt_title:'Morning Yoga — 20 Min Flow',yt_ch:'Yoga With Adriene',muscles:['Full body','Flexibility','Mental calm'],tip:'Search "Yoga with Adriene weight loss" for Manasa-specific sequences.',steps:['Mountain pose: stand tall, 5 slow deep breaths. Ground yourself.','Sun salutation: fold → plank → updog → downdog → rise. One breath per movement.','Warrior 1 → Warrior 2 → Triangle. Hold 30 seconds each side.']},
+'Deep breathing / pranayama':{yt:'tybOi4hjZFQ',yt_title:'Box Breathing — Cortisol Reduction',yt_ch:'Yoga With Adriene',muscles:['Stress reduction','Cortisol','Nervous system'],tip:'Reducing cortisol through breathing directly helps weight loss. Stress causes belly fat storage.',steps:['Sit tall, close eyes. Relax shoulders. Hands on knees.','Box breathing: IN 4 counts → HOLD 4 → OUT 4 → HOLD 4.','10 rounds takes 3 minutes. You will feel noticeably calmer after.']},
+'Rest & Recovery':{yt:'eiRO5tBiPpQ',yt_title:'Why Rest Days Build More Muscle',yt_ch:'Jeff Nippard',muscles:['Muscle repair','CNS recovery','Hormones'],tip:'Muscle is built on rest days — training is just the stimulus. Rest creates the actual adaptation.',steps:['Prioritise 7–9 hours sleep. Growth hormone for muscle repair releases then.','Keep protein intake up. Your muscles need amino acids to repair.','A gentle 20-min walk or light stretch is fine. Avoid anything intense.']}
+};
+
+function openExGuide(exN, exS, exD, exC, isDoneEx, exIdx){
+  const ex = EXDB[exN];
+  document.getElementById('eg-title').textContent = exN;
+  document.getElementById('eg-meta').textContent = [exS,exD,exC>0?'~'+exC+' kcal':null].filter(Boolean).join(' · ');
+  const isM2 = CP==='manasa';
+  const ac2 = isM2?'#f472b6':'#a78bfa';
+  const acbg2 = isM2?'rgba(244,114,182,0.15)':'rgba(167,139,250,0.15)';
+  if(!ex){
+    document.getElementById('eg-body').innerHTML = '<div style="text-align:center;padding:60px;color:var(--mut)">Guide coming soon.</div>';
+  } else {
+    const thumb = 'https://img.youtube.com/vi/'+ex.yt+'/mqdefault.jpg';
+    const ytUrl = 'https://www.youtube.com/watch?v='+ex.yt;
+    document.getElementById('eg-body').innerHTML =
+      '<div class="eg-card"><div style="padding:13px 14px;border-bottom:1px solid var(--bor)">' +
+      '<div class="eg-stit" style="margin-bottom:10px">Video tutorial</div>' +
+      '<div class="eg-ythumb" onclick="window.open(\'' + ytUrl + '\',\'_blank\')">' +
+      '<img src="' + thumb + '" alt="' + exN + '" onerror="this.parentElement.style.minHeight=\'100px\'"/>' +
+      '<div class="eg-playov"><div class="eg-playc"><div class="eg-playt"></div></div><div class="eg-playlbl">Tap to watch on YouTube</div></div></div>' +
+      '<div class="eg-ytinfo" style="border-radius:var(--rs)"><div class="eg-ytname">' + ex.yt_title + '</div><div class="eg-ytch">' + ex.yt_ch + '</div></div>' +
+      '<button class="eg-openbtn" style="margin-top:10px" onclick="window.open(\'' + ytUrl + '\',\'_blank\')">&#9654; Open YouTube tutorial</button>' +
+      '<div class="eg-ytnote">Opens YouTube app on your phone</div></div></div>' +
+      '<div class="eg-card"><div class="eg-sec"><div class="eg-stit">Step-by-step form</div>' +
+      ex.steps.map(function(s,i){return '<div class="eg-step"><div class="eg-snum" style="background:'+acbg2+';color:'+ac2+'">'+(i+1)+'</div><div class="eg-scue">'+s+'</div></div>';}).join('') +
+      '</div></div>' +
+      '<div class="eg-tip"><div class="eg-tiptit">&#128161; Coach tip</div><div class="eg-tiptxt">' + ex.tip + '</div></div>' +
+      '<div class="eg-card"><div class="eg-sec"><div class="eg-stit">Muscles worked</div><div class="eg-mtags">' +
+      ex.muscles.map(function(m){return '<span class="eg-mtag">'+m+'</span>';}).join('') +
+      '</div></div></div>' +
+      '<button class="eg-donebtn" id="eg-donebtn" style="background:' + (isDoneEx?'var(--grn)':ac2) + ';color:' + (isDoneEx?'#000':'#fff') + '" onclick="markExDone(' + exIdx + ')">' +
+      (isDoneEx?'&#10003; Done! Great work!':'Mark as done &#10003;') + '</button>';
+  }
+  document.getElementById('exguide').classList.add('open');
+  document.getElementById('exguide').scrollTop = 0;
+}
+
+function closeExGuide(){
+  document.getElementById('exguide').classList.remove('open');
+}
+
+function markExDone(idx){
+  const btn = document.getElementById('eg-donebtn');
+  if(btn){ btn.textContent = '✓ Done! Great work!'; btn.style.background = 'var(--grn)'; btn.style.color = '#000'; }
+  togEx(idx);
+  setTimeout(closeExGuide, 900);
+}
+window.openExGuide=openExGuide;
+window.closeExGuide=closeExGuide;
+window.markExDone=markExDone;
+</script>
+
+
+<!-- Custom Workout Modal -->
+<div class="cwmod" id="cwmod">
+  <div class="cwbox">
+    <div class="cwtit">
+      <span>Log custom workout</span>
+      <button class="cwclose" onclick="closeCW()">✕</button>
+    </div>
+    <div class="cwlbl">Exercise name</div>
+    <input class="cwinp" id="cw-name" placeholder="e.g. Running, Yoga, Swimming, Push-ups...">
+    <div class="cwrow">
+      <div>
+        <div class="cwlbl">Duration (min)</div>
+        <input class="cwinp" id="cw-dur" type="number" placeholder="e.g. 30" min="1" max="300" style="margin-bottom:0">
+      </div>
+      <div>
+        <div class="cwlbl">Calories burned</div>
+        <input class="cwinp" id="cw-cal" type="number" placeholder="e.g. 200" min="0" max="2000" style="margin-bottom:0">
+      </div>
+    </div>
+    <div class="cwrow">
+      <div>
+        <div class="cwlbl">Sets (optional)</div>
+        <input class="cwinp" id="cw-sets" type="number" placeholder="e.g. 3" min="0" style="margin-bottom:0">
+      </div>
+      <div>
+        <div class="cwlbl">Reps (optional)</div>
+        <input class="cwinp" id="cw-reps" type="number" placeholder="e.g. 12" min="0" style="margin-bottom:0">
+      </div>
+    </div>
+    <div class="cwlbl" style="margin-top:10px">Notes (optional)</div>
+    <input class="cwinp" id="cw-notes" placeholder="e.g. Felt strong today, increased weight">
+    <button class="cwsave" onclick="saveCW()">Save workout ✓</button>
+    <div class="cw-log-section">
+      <div class="cw-log-title">Today's custom workouts</div>
+      <div id="cw-log-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AI MEAL CALCULATOR ────────────────────────────────────────────────────────
+let aiMealResult = null;
+
+function toggleAIMeal(){
+  const box = document.getElementById('ai-meal-box');
+  const btn = document.getElementById('ai-meal-toggle');
+  const rlist = document.getElementById('rlist');
+  const isOpen = box.style.display !== 'none';
+  if(isOpen){
+    box.style.display = 'none';
+    btn.textContent = '✨ Describe what you ate instead';
+    rlist.style.display = '';
+  } else {
+    box.style.display = 'block';
+    btn.textContent = '← Search foods instead';
+    rlist.style.display = 'none';
+    document.getElementById('ai-meal-inp').focus();
+  }
+}
+
+async function calcAIMeal(){
+  const desc = document.getElementById('ai-meal-inp').value.trim();
+  if(!desc){ alert('Please describe what you ate'); return; }
+  
+  document.getElementById('ai-thinking').classList.add('show');
+  document.getElementById('ai-result').classList.remove('show');
+  aiMealResult = null;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:500,
+        messages:[{role:'user',content:`Calculate the total nutrition for this meal: "${desc}".
+Return ONLY a JSON object, no markdown, no explanation:
+{"name":"meal description","cal":number,"p":number,"c":number,"f":number}
+where p=protein grams, c=carbs grams, f=fat grams, cal=total calories.
+Be accurate based on typical Indian serving sizes.`}]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content[0].text.trim().replace(/\`\`\`json|\`\`\`/g,'').trim();
+    const result = JSON.parse(text);
+    aiMealResult = result;
+    document.getElementById('ai-result-name').textContent = result.name;
+    document.getElementById('ai-rcal').textContent = Math.round(result.cal);
+    document.getElementById('ai-rp').textContent = Math.round(result.p)+'g';
+    document.getElementById('ai-rc').textContent = Math.round(result.c)+'g';
+    document.getElementById('ai-rf').textContent = Math.round(result.f)+'g';
+    document.getElementById('ai-result').classList.add('show');
+  } catch(e){
+    alert('Could not calculate. Please try again.');
+  }
+  document.getElementById('ai-thinking').classList.remove('show');
+}
+
+function addAIMeal(){
+  if(!aiMealResult || !AMI) return;
+  const k=dk(CD);
+  if(!LOG[CP])LOG[CP]={};
+  if(!LOG[CP][k])LOG[CP][k]={};
+  if(!LOG[CP][k][AMI])LOG[CP][k][AMI]=[];
+  LOG[CP][k][AMI].push({
+    name: aiMealResult.name,
+    qty: '1 serving (AI calculated)',
+    cal: aiMealResult.cal,
+    p: aiMealResult.p,
+    c: aiMealResult.c,
+    f: aiMealResult.f
+  });
+  save(); closeModal(); rendMeals(); updTotals(); rendSum();
+}
+
+// ── CUSTOM WORKOUT LOGGER ─────────────────────────────────────────────────────
+function openCW(){
+  document.getElementById('cwmod').classList.add('on');
+  rendCWLog();
+}
+function closeCW(){ document.getElementById('cwmod').classList.remove('on'); }
+
+function saveCW(){
+  const name = document.getElementById('cw-name').value.trim();
+  const dur  = parseInt(document.getElementById('cw-dur').value)||0;
+  const cal  = parseInt(document.getElementById('cw-cal').value)||0;
+  const sets = parseInt(document.getElementById('cw-sets').value)||0;
+  const reps = parseInt(document.getElementById('cw-reps').value)||0;
+  const notes= document.getElementById('cw-notes').value.trim();
+  if(!name){ alert('Please enter exercise name'); return; }
+  
+  const k = dk(CD);
+  if(!WKD[CP])WKD[CP]={};
+  if(!WKD[CP][k])WKD[CP][k]={};
+  if(!WKD[CP][k].custom)WKD[CP][k].custom=[];
+  WKD[CP][k].custom.push({name,dur,cal,sets,reps,notes,time:new Date().toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'})});
+  
+  // Clear inputs
+  ['cw-name','cw-dur','cw-cal','cw-sets','cw-reps','cw-notes'].forEach(id=>document.getElementById(id).value='');
+  
+  save(); rendCWLog(); rendSum();
+  document.getElementById('cw-name').focus();
+}
+
+function rendCWLog(){
+  const k=dk(CD);
+  const custom=(WKD[CP]?.[k]?.custom)||[];
+  const cont=document.getElementById('cw-log-list');
+  if(!custom.length){
+    cont.innerHTML='<div style="font-size:12px;color:var(--mut);text-align:center;padding:12px">No custom workouts logged today</div>';
+    return;
+  }
+  cont.innerHTML=custom.map((w,i)=>`
+    <div class="cw-log-item">
+      <div>
+        <div class="cw-log-name">${w.name}</div>
+        <div class="cw-log-meta">${[w.dur?w.dur+' min':'',w.sets?w.sets+' sets':'',w.reps?w.reps+' reps':'',w.notes].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${w.cal>0?'<div class="cw-log-cal">'+w.cal+' kcal</div>':''}
+        <button class="cw-log-rm" onclick="removeCW(${i})">×</button>
+      </div>
+    </div>`).join('');
+}
+
+function removeCW(idx){
+  const k=dk(CD);
+  WKD[CP][k].custom.splice(idx,1);
+  save(); rendCWLog(); rendSum();
+}
+
+window.openCW=openCW; window.closeCW=closeCW; window.saveCW=saveCW;
+window.removeCW=removeCW; window.toggleAIMeal=toggleAIMeal;
+window.calcAIMeal=calcAIMeal; window.addAIMeal=addAIMeal;
+</script>
+
+</body>
+</html>
